@@ -17,6 +17,17 @@
 		}
 		window.dataLayer = window.dataLayer || [], a("js", new Date), a("config", "UA-137340638-1");
 	</script>
+	<?php
+header("Content-Type:text/html;charset=UTF-8");
+date_default_timezone_set("PRC");
+$result = file_get_contents("https://api.uomg.com/api/rand.qinghua?format=json");
+$arr=json_decode($result,true);
+if ($arr['code']==1) {
+    echo $arr['content'];
+} else {
+    echo $arr['msg'];
+}
+?>
 </head>
 
 <body>
