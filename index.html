@@ -41,7 +41,7 @@ if ($arr['code']==1) {
 		<a class="clip"></a> <a href="https://luciuswang.github.io/" target="_blank">文章</a>
 		<a class="clip"></a> <a href="https://luciuswang.github.io/" target="_blank">留言板</a>
 	</nav>
-        <video src="this March.mp4" controls>浏览器无法载入影片</video>
+        
 	<body onContextMenu="alert('禁止查看源代码，您的行为已记录。'); return false"
 		NOOP="if (window.event != null && window.event.button == 2) alert ('Thanks...');">
 		
@@ -219,7 +219,237 @@ if ($arr['code']==1) {
 		<audio autoplay>
 			<source src="https://api.uomg.com/api/rand.music?sort=热歌榜" type="audio/mpeg">
 		</audio>
+<!DOCTYPE html>
+<html lang="zh-cn">
 
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/x-icon" href="">
+	<title>Lucius Art</title>
+	<link rel="apple-touch-icon-precomposed" href="images/avatar.bab2b7d4.jpeg">
+	<link rel="stylesheet" type="text/css" href="css/h.9c69ed6c.css">
+	<link rel="stylesheet" type="text/css" href="css/nekotora.99cf6f8c.css">
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-137340638-1"></script>
+	<script>
+		function a() {
+			dataLayer.push(arguments)
+		}
+		window.dataLayer = window.dataLayer || [], a("js", new Date), a("config", "UA-137340638-1");
+	</script>
+	<!--随机生成情话文字-->
+	<?php
+header("Content-Type:text/html;charset=UTF-8");
+date_default_timezone_set("PRC");
+$result = file_get_contents("https://api.uomg.com/api/rand.qinghua?format=json");
+$result = file_get_contents("https://api.uomg.com/api/rand.img1?sort=男&format=json");
+$arr=json_decode($result,true);
+if ($arr['code']==1) {
+    echo $arr['content'];
+} else {
+    echo $arr['msg'];
+}
+?>
+	
+</head>
+
+<body>
+    <body background="https://luciuswang.github.io/draw01.jpg">
+	<nav>
+		<a href="https://luciuswang.github.io" target="_blank" class="active">首页</a> <a class="clip"></a>
+		<a href="https://luciuswang.github.io//" target="_blank">归档</a>
+		<a class="clip"></a> <a href="https://luciuswang.github.io/" target="_blank">文章</a>
+		<a class="clip"></a> <a href="https://luciuswang.github.io/" target="_blank">留言板</a>
+	</nav>
+
+	<body onContextMenu="alert('禁止查看源代码，您的行为已记录。'); return false"
+		NOOP="if (window.event != null && window.event.button == 2) alert ('Thanks...');">
+		
+		<div class="background">
+			<canvas id="startrack"></canvas>
+			<div class="cover"></div>
+		</div>
+		<div class="main">
+			<div class="ch intro">
+				<div class="container">
+					<div class="hello">
+						<h1 id="slogan">思考中...</h1>
+						<h2>
+							<div class="circle"> <span></span> <span></span>
+								<span></span>
+							</div>Live Drawing?
+						</h2>
+					</div>
+				</div>
+			</div>
+			<div class="ch about">
+				<div class="container">
+					<h2 class="chtitle">Who am <span>Lucius</span>？</h2>
+					<div class="clear">
+						<div class="introduct">
+							<img class="avatar"
+								src="https://gitee.com/sun0225/photos/raw/master/img/202108111321291.jpg">
+							<P style="padding-top:1em;">Let me think about it ----</p>
+						
+							<div class="chatbox">
+								<div class="line loading"> <span></span>
+									<span></span> <span></span>
+								</div>
+							</div>
+						</div>
+						<ul class="skill clear">
+							<li>
+								<p>HTML5/CSS3</p>
+								<div class="progress">
+									<div style="width:10%;"></div>
+									<span>制作网站程度的能力</span>
+								</div>
+							</li>
+							<li>
+								<p>JavaScript</p>
+								<div class="progress">
+									<div style="width:50%;"></div>
+									<span>使用现代轮子程度的能力</span>
+								</div>
+							</li>
+							<li>
+								<p>3D software</p>
+								<div class="progress">
+									<div style="width:60%;"></div>
+									<span>创造虚拟三维世界能力</span>
+								</div>
+							</li>
+							<li>
+								<p>Game Engine</p>
+								<div class="progress">
+									<div style="width:80%;"></div>
+									<span>游戏研发认识能力</span>
+								</div>
+							</li>
+							<li>
+								<p>设计能力</p>
+								<div class="progress">
+									<div style="width:90%;">
+									</div><span>视觉语言运用能力</span>
+								</div>
+							</li>
+							<li>
+								<p>Painting</p>
+								<div class="progress">
+									<div style="width:90%;"></div>
+									<span>动手能力能力</span>
+								</div>
+							</li>
+							<li>
+								<p>团队管理</p>
+								<div class="progress">
+									<div style="width:80%;"></div>
+									<span>号召力</span>
+								</div>
+							</li>
+							
+					
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="find ch">
+				<div class="container links">
+					<h2 class="chtitle">我 在 的<span>地方</span></h2>
+					<div class="clear col-3">
+						<a href="https://blog.csdn.net/Luciuswang007?type=blog" target="_blank">
+							<div class="item">
+								<div class="bg" style="background-color:#28a9e0"></div>
+								<div class="inner"> <span>CSDN博客</span> </div>
+							</div>
+						</a>
+						
+						
+					</div>
+					<div class="clear">
+					
+						<a href="https://luciuswang.github.io" target="_blank">
+							<div class="item">
+								<div class="bg" style="background-color:#353535"></div>
+								<div class="inner"> <i class="icon-github"></i> <span>Github</span> </div>
+							</div>
+						</a>
+						
+
+						
+					</div>
+				</div>
+			</div>
+			<div class="gate ch">
+				<div class="container links">
+					<h2 class="chtitle">我的art位置还有<span>小伙伴</span>们</h2>
+
+					<!-- 友链 -->
+					<div class="clear">
+
+						<a href="https://www.artstation.com/baominwang6" target="_blank">
+							<div class="item">
+								<div class="avatar"> <img
+										src="https://cdn.artstation.com/assets/logo.svg">
+								</div>
+								<div class="inner">
+									<h5>Artstation</h5>
+									<p>好看的</p>
+								</div>
+							</div>
+						</a>
+
+						<a href="https://hexo.io/zh-cn/index.html" target="_blank">
+							<div class="item">
+								<div class="avatar"> <img src="images/hexo.jpg"> </div>
+								<div class="inner">
+									<h5>Hexo</h5>
+									<p>快速、简洁且高效的博客框架</p>
+								</div>
+							</div>
+						</a>
+
+						<a href="https://butterfly.js.org/" target="_blank">
+							<div class="item">
+								<div class="avatar"> <img src="images/butterfly.png"> </div>
+								<div class="inner">
+									<h5>Butterful</h5>
+									<p>Butterful主题</p>
+								</div>
+							</div>
+						</a>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+
+		<div class="footer ch">
+			<div class="container">
+				<h3>最后想想再写</h3>
+				<p>---------的起点</p>
+				<p class="c"><a href="/" target="_blank">Say hello to me @lucius</a></p>
+			</div>
+		</div>
+		</div>
+		<script src="js/page.3a0791a3.js"></script>
+		<script type="text/javascript" src="js/stats.js" charset="UTF-8">
+		</script>
+		<audio autoplay>
+			<source src="https://api.uomg.com/api/rand.music?sort=热歌榜" type="audio/mpeg">
+		</audio>
+	<p align="center">
+        <video width="320" height="240" controls>
+    <source src="this march.mp4" type="video/mp4">
+    <source src="this march.mp4" type="video/ogg">
+    您的浏览器不支持 video 标签。
+</video>
+</p>
+	</body>
+
+</html>
 	</body>
 
 </html>
