@@ -25,10 +25,10 @@
         /* --------- 导航 --------- */
         header{position:fixed;top:0;left:0;width:100%;background:rgba(18,18,18,.9);backdrop-filter:blur(8px);z-index:1000;}
         nav{max-width:1200px;margin:0 auto;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;}
-        .logo{font-size:1.75rem;font-weight:900;color:var(--accent);}
+        .logo{font-size:1.75rem;font-weight:900;color:var(--accent);} 
         .nav-links{list-style:none;display:flex;gap:2rem;}
         .nav-links a{color:var(--text-main);text-decoration:none;font-weight:700;transition:color .2s;}
-        .nav-links a:hover{color:var(--accent);}
+        .nav-links a:hover{color:var(--accent);} 
         .burger{display:none;flex-direction:column;gap:6px;cursor:pointer;}
         .burger span{width:26px;height:3px;background:var(--text-main);transition:.3s;}
 
@@ -38,7 +38,7 @@
         .hero-content{position:relative;z-index:2;max-width:800px;padding:0 1rem;}
         .hero h1{font-size:clamp(2.5rem,6vw,5rem);font-weight:900;margin-bottom:1rem;line-height:1.1;}
         .hero p{font-size:1.25rem;margin-bottom:2rem;}
-        .btn-primary{display:inline-block;background:var(--accent);color:#fff;padding:.75rem 1.5rem;border-radius:6px;font-weight:700;text-decoration:none;transition:background .2s;}
+        .btn-primary{display:inline-block;background:var(--accent);color:#fff;padding:.75rem 1.5rem;border-radius:6px;font-weight:700;text-decoration:none;transition:background .2s;cursor:pointer;border:none;}
         .btn-primary:hover{background:var(--accent-hover);} 
 
         /* --------- Sections --------- */
@@ -76,12 +76,15 @@
 
         /* --------- Game --------- */
         #gameCanvas{display:block;margin:0 auto;background:#000;border:2px solid var(--accent);border-radius:8px;touch-action:none;}
+        .game-controls{display:flex;justify-content:center;gap:1rem;margin-top:1rem;flex-wrap:wrap;}
         .scoreboard{text-align:center;font-size:1.25rem;margin-top:1rem;font-weight:700;}
+        .instructions{text-align:center;font-size:.9rem;margin-top:.5rem;line-height:1.4;max-width:600px;margin-inline:auto;}
 
         /* 响应式 */
         @media(max-width:768px){
             .nav-links{position:fixed;top:75px;right:-100%;width:200px;height:calc(100vh - 75px);background:#121212;flex-direction:column;gap:1.5rem;padding-top:2rem;transition:right .3s;}
-            .nav-links.active{right:0;} .burger{display:flex;}
+            .nav-links.active{right:0;} 
+            .burger{display:flex;}
         }
     </style>
 </head>
@@ -140,115 +143,4 @@
         <div class="shop-grid">
             <div class="product">
                 <img src="assets/product1.jpg" alt="数字插画高清包"/>
-                <div class="product-content">
-                    <h3>数字插画高清包</h3>
-                    <p>包含 20 张 4K 分辨率原画，可用作壁纸或学习参考。</p>
-                    <div class="price">￥49</div>
-                    <a class="btn-primary" href="https://lucius.gumroad.com/l/hdpack" target="_blank">立即购买</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========= 在线小游戏 ========= -->
-    <section id="game">
-        <h2>在线打飞机</h2>
-        <canvas id="gameCanvas" width="480" height="640"></canvas>
-        <div class="scoreboard" id="scoreBoard">得分：0</div>
-    </section>
-
-    <!-- ========= 联系 ========= -->
-    <section id="contact">
-        <h2>联系我</h2>
-        <form class="contact-form" action="https://formspree.io/f/yourformid" method="POST">
-            <input type="text" name="name" placeholder="姓名 / Name" required />
-            <input type="email" name="email" placeholder="电子邮箱 / Email" required />
-            <textarea name="message" placeholder="留言内容 / Message" required></textarea>
-            <button type="submit">发送消息</button>
-        </form>
-    </section>
-
-    <!-- ========= 脚本 ========= -->
-    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
-    <script>
-        // 灯箱
-        GLightbox({ selector: '.glightbox' });
-
-        // 汉堡菜单
-        const burger=document.getElementById('burger');
-        const navLinks=document.getElementById('navLinks');
-        burger.addEventListener('click',()=>{navLinks.classList.toggle('active');});
-
-        // 区块可见动画
-        const sections=document.querySelectorAll('section');
-        const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}})},{threshold:0.05});
-        sections.forEach(s=>obs.observe(s));
-
-        /* -------- 打飞机小游戏 -------- */
-        const canvas=document.getElementById('gameCanvas');
-        const ctx=canvas.getContext('2d');
-        const scoreBoard=document.getElementById('scoreBoard');
-        let keys={};
-        let bullets=[]; let enemies=[]; let score=0; let gameOver=false;
-        const player={x:canvas.width/2-20,y:canvas.height-60,w:40,h:40,speed:4};
-        window.addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='Space')shoot();});
-        window.addEventListener('keyup',e=>delete keys[e.code]);
-        canvas.addEventListener('pointermove',e=>{
-            const rect=canvas.getBoundingClientRect();
-            const posX=e.clientX-rect.left; // follow pointer horizontally
-            player.x=posX-player.w/2;
-        });
-        function shoot(){bullets.push({x:player.x+player.w/2-3,y:player.y,w:6,h:12,speed:7});}
-        function spawnEnemy(){const size=30+Math.random()*20;enemies.push({x:Math.random()*(canvas.width-size),y:-size,w:size,h:size,speed:2+Math.random()*2});}
-        let enemyTimer=0;
-        function update(){
-            if(gameOver)return;
-            // Move player
-            if(keys['ArrowLeft']||keys['KeyA']) player.x-=player.speed;
-            if(keys['ArrowRight']||keys['KeyD']) player.x+=player.speed;
-            if(keys['ArrowUp']||keys['KeyW']) player.y-=player.speed;
-            if(keys['ArrowDown']||keys['KeyS']) player.y+=player.speed;
-            player.x=Math.max(0,Math.min(canvas.width-player.w,player.x));
-            player.y=Math.max(canvas.height/2,Math.min(canvas.height-player.h,player.y));
-            // Bullets
-            bullets.forEach(b=>b.y-=b.speed);
-            bullets=bullets.filter(b=>b.y>-b.h);
-            // Enemies
-            enemyTimer++;
-            if(enemyTimer>50){spawnEnemy();enemyTimer=0;}
-            enemies.forEach(en=>en.y+=en.speed);
-            enemies=enemies.filter(en=>en.y<canvas.height+en.h);
-            // Collisions
-            enemies.forEach((en,ei)=>{
-                // Player collision
-                if(collide(en,player))endGame();
-                bullets.forEach((b,bi)=>{
-                    if(collide(en,b)){
-                        enemies.splice(ei,1);
-                        bullets.splice(bi,1);
-                        score+=100;
-                        scoreBoard.textContent='得分：'+score;
-                    }
-                });
-            });
-        }
-        function draw(){
-            ctx.fillStyle="#000";ctx.fillRect(0,0,canvas.width,canvas.height);
-            // Player
-            ctx.fillStyle="#00aaff";
-            ctx.fillRect(player.x,player.y,player.w,player.h);
-            ctx.fillStyle="#fff";
-            ctx.fillRect(player.x+player.w/2-2,player.y-10,4,10);
-            // Bullets
-            ctx.fillStyle="#ffff00";
-            bullets.forEach(b=>ctx.fillRect(b.x,b.y,b.w,b.h));
-            // Enemies
-            ctx.fillStyle="#ff4d4d";
-            enemies.forEach(en=>ctx.fillRect(en.x,en.y,en.w,en.h));
-            if(gameOver){ctx.fillStyle="#fff";ctx.font="bold 32px Noto Sans SC";ctx.textAlign="center";ctx.fillText("GAME OVER",canvas.width/2,canvas.height/2);} }
-        function collide(a,b){return a.x<b.x+b.w&&a.x+a.w> b.x&&a.y<b.y+b.h&&a.y+a.h> b.y;}
-        function endGame(){gameOver=true;}
-        function loop(){update();draw();requestAnimationFrame(loop);} loop();
-    </script>
-</body>
-</html>
+                <div class
