@@ -93,7 +93,7 @@ function checkCollisions() {
                 enemies.splice(ei, 1);
                 score++;
                 scoreDisplay.textContent = `击毁敌机：${score}`;
-                if (score >= 20) {
+                if (score >= 10) {
                     resume.style.display = 'block';
                     running = false;
                     const scaleFactor = canvas.width / bgImage.width;
