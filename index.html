@@ -16,7 +16,7 @@
 </head>
 <body>
 
-<canvas id="gameCanvas" width="480" height="640"></canvas>
+<canvas id="gameCanvas"></canvas>
 <div id="info">操作：鼠标移动控制飞机，单击射击</div>
 <div id="score">击毁敌机：0</div>
 <button id="startBtn">开始游戏</button>
@@ -30,12 +30,14 @@
 
 <script>
 const canvas = document.getElementById('gameCanvas');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 const ctx = canvas.getContext('2d');
 const startBtn = document.getElementById('startBtn');
 const resume = document.getElementById('resume');
 const scoreDisplay = document.getElementById('score');
 let bullets = [], enemies = [], explosions = [];
-let plane = { x: 220, y: 550, width: 40, height: 40 };
+let plane = { x: canvas.width / 2, y: canvas.height - 50, width: 40, height: 40 };
 let running = false;
 let score = 0;
 
@@ -43,9 +45,8 @@ const bgImage = new Image();
 bgImage.src = '2d_art_30.png';
 
 canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    plane.x = e.clientX - rect.left - plane.width / 2;
-    plane.y = e.clientY - rect.top - plane.height / 2;
+    plane.x = e.clientX - plane.width / 2;
+    plane.y = e.clientY - plane.height / 2;
 });
 
 canvas.addEventListener('click', () => {
@@ -75,7 +76,11 @@ function drawEnemies() {
     enemies.forEach((e, i) => {
         e.y += 2;
         ctx.fillRect(e.x, e.y, 30, 30);
-        if (e.y > canvas.height) enemies.splice(i, 1);
+        if (e.y > canvas.height) {
+            running = false;
+            startBtn.style.display = 'block';
+            alert('游戏失败，点击确定重新开始！');
+        }
     });
 }
 
@@ -91,7 +96,9 @@ function checkCollisions() {
                 if (score >= 100) {
                     resume.style.display = 'block';
                     running = false;
-                    ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+                    const scaleFactor = canvas.width / bgImage.width;
+                    const imgHeight = bgImage.height * scaleFactor;
+                    ctx.drawImage(bgImage, 0, (canvas.height - imgHeight) / 2, canvas.width, imgHeight);
                 }
             }
         });
@@ -125,6 +132,7 @@ function gameLoop() {
 startBtn.addEventListener('click', () => {
     running = true;
     score = 0;
+    bullets = []; enemies = []; explosions = [];
     scoreDisplay.textContent = '击毁敌机：0';
     resume.style.display = 'none';
     startBtn.style.display = 'none';
