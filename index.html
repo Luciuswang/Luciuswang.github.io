@@ -11,7 +11,16 @@
         #info { top: 10px; left: 10px; }
         #score { top: 10px; right: 10px; }
         button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px; }
-        #resume { color: white; position: absolute; bottom: -100%; width: 100%; text-align: center; font-size: 18px; }
+        #resume {
+            color: white;
+            position: absolute;
+            bottom: -100%;
+            width: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 18px;
+        }
         @keyframes scrollUp {
             from { bottom: -100%; }
             to { bottom: 20%; }
@@ -92,29 +101,21 @@ function checkCollisions() {
     bullets.forEach((b, bi) => {
         enemies.forEach((e, ei) => {
             if (b.x < e.x + 30 && b.x + 4 > e.x && b.y < e.y + 30 && b.y + 10 > e.y) {
-                explosions.push({ x: e.x, y: e.y, time: 10 });
                 bullets.splice(bi, 1);
                 enemies.splice(ei, 1);
                 score++;
                 scoreDisplay.textContent = `击毁敌机：${score}`;
                 if (score >= 10) {
                     running = false;
-                    ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
-                    resume.style.animation = 'scrollUp 20s linear forwards';
+                    bgImage.onload = () => {
+                        const scaleFactor = canvas.width / bgImage.width;
+                        const imgHeight = bgImage.height * scaleFactor;
+                        ctx.drawImage(bgImage, 0, (canvas.height - imgHeight) / 2, canvas.width, imgHeight);
+                        resume.style.animation = 'scrollUp 20s linear forwards';
+                    };
                 }
             }
         });
-    });
-}
-
-function drawExplosions() {
-    ctx.fillStyle = 'orange';
-    explosions.forEach((ex, i) => {
-        ctx.beginPath();
-        ctx.arc(ex.x + 15, ex.y + 15, ex.time, 0, Math.PI * 2);
-        ctx.fill();
-        ex.time--;
-        if (ex.time <= 0) explosions.splice(i, 1);
     });
 }
 
@@ -126,7 +127,6 @@ function gameLoop() {
     drawBullets();
     drawEnemies();
     checkCollisions();
-    drawExplosions();
 
     requestAnimationFrame(gameLoop);
 }
@@ -134,9 +134,8 @@ function gameLoop() {
 startBtn.addEventListener('click', () => {
     running = true;
     score = 0;
-    bullets = []; enemies = []; explosions = [];
+    bullets = []; enemies = [];
     scoreDisplay.textContent = '击毁敌机：0';
-    resume.style.display = 'block';
     resume.style.animation = 'none';
     startBtn.style.display = 'none';
     setInterval(spawnEnemy, 1000);
