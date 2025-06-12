@@ -1,49 +1,41 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>网页打飞机游戏</title>
-    <style>
-        body { margin: 0; padding: 0; overflow: hidden; background-color: #000; }
-        canvas { display: block; margin: 0 auto; }
-        #info, #score { color: white; position: absolute; }
-        #info { top: 10px; left: 10px; }
-        #score { top: 10px; right: 10px; }
-        button#startBtn {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px;
-        }
-        #resume {
-            color: white;
-            position: absolute;
-            bottom: -100%;
-            width: 50%;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            font-size: 18px;
-            display: none;
-            background: transparent;
-        }
-        #backBtn {
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            padding: 10px 20px;
-            background: #8a2be2;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            display: none;
-            z-index: 9999;
-        }
-        @keyframes scrollUp {
-            from { bottom: -100%; }
-            to { bottom: 20%; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网页打飞机游戏</title>
+<style>
+  body { margin: 0; padding: 0; overflow: hidden; background-color: #000; }
+  canvas { display: block; margin: 0 auto; }
+  #info, #score { color: white; position: absolute; }
+  #info { top: 10px; left: 10px; }
+  #score { top: 10px; right: 10px; }
+  button#startBtn {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px;
+  }
+  #resume {
+    color: white; position: absolute; bottom: -100%; width: 50%; left: 50%;
+    transform: translateX(-50%); text-align: center; font-size: 18px; display: none;
+    background: transparent;
+  }
+  #backBtn {
+    position: fixed; right: 20px; bottom: 20px; padding: 10px 20px;
+    background: #8a2be2; color: white; border: none; border-radius: 5px;
+    font-size: 16px; cursor: pointer; display: none; z-index: 9999;
+  }
+  .floating-text {
+    position: absolute; color: yellow; font-size: 24px; pointer-events: none;
+    animation: rise 1s ease-out forwards;
+  }
+  @keyframes rise {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-50px); }
+  }
+  @keyframes scrollUp {
+    from { bottom: -100%; }
+    to { bottom: 20%; }
+  }
+</style>
 </head>
 <body>
 
@@ -52,11 +44,11 @@
 <div id="score">击毁敌机：0</div>
 <button id="startBtn">开始游戏</button>
 <div id="resume">
-    <h2>个人简历</h2>
-    <p>姓名：Lucius</p>
-    <p>职业：Freefire 艺术总监</p>
-    <p>联系方式：lucius@example.com</p>
-    <p>曾先后任职于Garena与Ubisoft公司，拥有丰富的游戏美术与创意设计经验。从业超过20年，前10年在Ubisoft期间，主要负责刺客信条系列、《孤岛惊魂》、《看门狗》等知名AAA游戏的角色概念和世界设计，确立了高度一致的视觉风格和沉浸式体验，获得广泛赞誉。随后转战Garena公司，担任Freefire项目艺术总监，统领全球最受欢迎的移动游戏之一Freefire的美术开发。负责游戏整体视觉设计、角色开发和皮肤设计、宣传美术以及游戏内外各种创意活动。通过其领导，Freefire的视觉风格更具辨识度与吸引力，成功吸引了大量全球玩家并赢得了多个国际游戏大奖。擅长使用Photoshop、Blender、Maya等多种专业软件工具，对视觉叙事、场景构造及角色设计拥有深入研究和卓越成就。</p>
+  <h2>个人简历</h2>
+  <p>姓名：王保民</p>
+  <p>职业：美术总监</p>
+  <p>联系方式：luxi_007@163.com / 13564009387</p>
+  <p>曾任职于Garena与Ubisoft，参与FreeFire、Breakout、Hero of Newerth、Farcry3等项目，担任美术总监与SFX Artist，具备丰富的项目统筹与视觉艺术设计经验，擅长雕塑、贴图、特效与动画团队管理。</p>
 </div>
 <button id="backBtn">返回游戏</button>
 
@@ -75,108 +67,110 @@ let running = false;
 let score = 0;
 let gameLoopId;
 let enemyInterval;
+const resumeText = '王保民 男 1977年生于上海。2000年毕业于天津美术学院雕塑系。2000至2014年在Ubisoft参与《孤岛惊魂》《细胞分裂》等项目，任特效及贴图美术。2014年加入Garena，主导《FreeFire》等项目视觉开发。擅长SFX、Shader、特效管理与团队建设。';
 
 canvas.addEventListener('mousemove', (e) => {
-    plane.x = e.clientX - plane.width / 2;
-    plane.y = e.clientY - plane.height / 2;
+  plane.x = e.clientX - plane.width / 2;
+  plane.y = e.clientY - plane.height / 2;
 });
-
 canvas.addEventListener('click', () => {
-    bullets.push({ x: plane.x + plane.width / 2 - 2, y: plane.y });
+  bullets.push({ x: plane.x + plane.width / 2 - 2, y: plane.y });
 });
-
 function spawnEnemy() {
-    enemies.push({ x: Math.random() * (canvas.width - 30), y: -30 });
+  enemies.push({ x: Math.random() * (canvas.width - 30), y: -30 });
 }
-
 function drawPlane() {
-    ctx.fillStyle = 'white';
-    ctx.fillRect(plane.x, plane.y, plane.width, plane.height);
+  ctx.fillStyle = 'white';
+  ctx.fillRect(plane.x, plane.y, plane.width, plane.height);
 }
-
 function drawBullets() {
-    ctx.fillStyle = 'yellow';
-    bullets.forEach((b, i) => {
-        b.y -= 5;
-        ctx.fillRect(b.x, b.y, 4, 10);
-        if (b.y < 0) bullets.splice(i, 1);
-    });
+  ctx.fillStyle = 'yellow';
+  bullets.forEach((b, i) => {
+    b.y -= 5;
+    ctx.fillRect(b.x, b.y, 4, 10);
+    if (b.y < 0) bullets.splice(i, 1);
+  });
 }
-
 function drawEnemies() {
-    ctx.fillStyle = 'red';
-    enemies.forEach((e, i) => {
-        e.y += 2;
-        ctx.fillRect(e.x, e.y, 30, 30);
-        if (e.y > canvas.height) {
-            running = false;
-            clearInterval(enemyInterval);
-            alert('游戏失败，点击确定重新开始！');
-            startBtn.style.display = 'block';
-            cancelAnimationFrame(gameLoopId);
-        }
-    });
+  ctx.fillStyle = 'red';
+  enemies.forEach((e, i) => {
+    e.y += 2;
+    ctx.fillRect(e.x, e.y, 30, 30);
+    if (e.y > canvas.height) {
+      running = false;
+      clearInterval(enemyInterval);
+      alert('游戏失败，点击确定重新开始！');
+      startBtn.style.display = 'block';
+      cancelAnimationFrame(gameLoopId);
+    }
+  });
 }
-
+function showFloatingText(char, x, y) {
+  const text = document.createElement('div');
+  text.className = 'floating-text';
+  text.style.left = `${x}px`;
+  text.style.top = `${y}px`;
+  text.textContent = char;
+  document.body.appendChild(text);
+  setTimeout(() => text.remove(), 1000);
+}
 function checkCollisions() {
-    bullets.forEach((b, bi) => {
-        enemies.forEach((e, ei) => {
-            if (b.x < e.x + 30 && b.x + 4 > e.x && b.y < e.y + 30 && b.y + 10 > e.y) {
-                bullets.splice(bi, 1);
-                enemies.splice(ei, 1);
-                score++;
-                scoreDisplay.textContent = `击毁敌机：${score}`;
-                if (score >= 10) {
-                    running = false;
-                    cancelAnimationFrame(gameLoopId);
-                    clearInterval(enemyInterval);
-                    const bgImage = new Image();
-                    bgImage.onload = () => {
-                        const scaleFactor = canvas.width / bgImage.width;
-                        const imgHeight = bgImage.height * scaleFactor;
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(bgImage, 0, (canvas.height - imgHeight) / 2, canvas.width, imgHeight);
-                        resume.style.display = 'block';
-                        resume.style.animation = 'scrollUp 20s linear forwards';
-                        backBtn.style.display = 'block';
-                    };
-                    bgImage.src = '2d_art_30.png';
-                }
-            }
-        });
+  bullets.forEach((b, bi) => {
+    enemies.forEach((e, ei) => {
+      if (b.x < e.x + 30 && b.x + 4 > e.x && b.y < e.y + 30 && b.y + 10 > e.y) {
+        bullets.splice(bi, 1);
+        enemies.splice(ei, 1);
+        if (score < resumeText.length) {
+          showFloatingText(resumeText[score], e.x + 15, e.y);
+        }
+        score++;
+        scoreDisplay.textContent = `击毁敌机：${score}`;
+        if (score >= resumeText.length) {
+          running = false;
+          cancelAnimationFrame(gameLoopId);
+          clearInterval(enemyInterval);
+          const bgImage = new Image();
+          bgImage.onload = () => {
+            const scaleFactor = canvas.width / bgImage.width;
+            const imgHeight = bgImage.height * scaleFactor;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(bgImage, 0, (canvas.height - imgHeight) / 2, canvas.width, imgHeight);
+            resume.style.display = 'block';
+            resume.style.animation = 'scrollUp 20s linear forwards';
+            backBtn.style.display = 'block';
+          };
+          bgImage.src = '2d_art_30.png';
+        }
+      }
     });
+  });
 }
-
 function gameLoop() {
-    if (!running) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawPlane(); drawBullets(); drawEnemies(); checkCollisions();
-    gameLoopId = requestAnimationFrame(gameLoop);
+  if (!running) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawPlane(); drawBullets(); drawEnemies(); checkCollisions();
+  gameLoopId = requestAnimationFrame(gameLoop);
 }
-
 startBtn.addEventListener('click', () => {
-    running = true; score = 0;
-    bullets = []; enemies = [];
-    scoreDisplay.textContent = '击毁敌机：0';
-    resume.style.display = 'none'; resume.style.animation = 'none';
-    startBtn.style.display = 'none';
-    backBtn.style.display = 'none';
-    enemyInterval = setInterval(spawnEnemy, 1000);
-    gameLoop();
+  running = true; score = 0;
+  bullets = []; enemies = [];
+  scoreDisplay.textContent = '击毁敌机：0';
+  resume.style.display = 'none'; resume.style.animation = 'none';
+  startBtn.style.display = 'none'; backBtn.style.display = 'none';
+  enemyInterval = setInterval(spawnEnemy, 1000);
+  gameLoop();
 });
-
 backBtn.addEventListener('click', () => {
-    bullets = [];
-    enemies = [];
-    score = 0;
-    scoreDisplay.textContent = '击毁敌机：0';
-    resume.style.display = 'none';
-    resume.style.animation = 'none';
-    backBtn.style.display = 'none';
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    running = true;
-    enemyInterval = setInterval(spawnEnemy, 1000);
-    gameLoop();
+  bullets = [];
+  enemies = [];
+  score = 0;
+  scoreDisplay.textContent = '击毁敌机：0';
+  resume.style.display = 'none'; resume.style.animation = 'none';
+  backBtn.style.display = 'none';
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  running = true;
+  enemyInterval = setInterval(spawnEnemy, 1000);
+  gameLoop();
 });
 </script>
 
