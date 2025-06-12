@@ -22,6 +22,19 @@
             font-size: 18px;
             display: none;
         }
+        #backBtn {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            padding: 10px 20px;
+            background: #8a2be2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+        }
         @keyframes scrollUp {
             from { bottom: -100%; }
             to { bottom: 20%; }
@@ -41,6 +54,7 @@
     <p>联系方式：lucius@example.com</p>
     <p>曾先后任职于Garena与Ubisoft公司，拥有丰富的游戏美术与创意设计经验。从业超过20年，前10年在Ubisoft期间，主要负责刺客信条系列、《孤岛惊魂》、《看门狗》等知名AAA游戏的角色概念和世界设计，确立了高度一致的视觉风格和沉浸式体验，获得广泛赞誉。随后转战Garena公司，担任Freefire项目艺术总监，统领全球最受欢迎的移动游戏之一Freefire的美术开发。负责游戏整体视觉设计、角色开发和皮肤设计、宣传美术以及游戏内外各种创意活动。通过其领导，Freefire的视觉风格更具辨识度与吸引力，成功吸引了大量全球玩家并赢得了多个国际游戏大奖。擅长使用Photoshop、Blender、Maya等多种专业软件工具，对视觉叙事、场景构造及角色设计拥有深入研究和卓越成就。</p>
 </div>
+<button id="backBtn">返回游戏</button>
 
 <script>
 const canvas = document.getElementById('gameCanvas');
@@ -49,12 +63,14 @@ canvas.height = window.innerHeight;
 const ctx = canvas.getContext('2d');
 const startBtn = document.getElementById('startBtn');
 const resume = document.getElementById('resume');
+const backBtn = document.getElementById('backBtn');
 const scoreDisplay = document.getElementById('score');
 let bullets = [], enemies = [];
 let plane = { x: canvas.width / 2, y: canvas.height - 50, width: 40, height: 40 };
 let running = false;
 let score = 0;
 let gameLoopId;
+let enemyInterval;
 
 canvas.addEventListener('mousemove', (e) => {
     plane.x = e.clientX - plane.width / 2;
@@ -90,8 +106,9 @@ function drawEnemies() {
         ctx.fillRect(e.x, e.y, 30, 30);
         if (e.y > canvas.height) {
             running = false;
-            startBtn.style.display = 'block';
+            clearInterval(enemyInterval);
             alert('游戏失败，点击确定重新开始！');
+            startBtn.style.display = 'block';
             cancelAnimationFrame(gameLoopId);
         }
     });
@@ -108,6 +125,7 @@ function checkCollisions() {
                 if (score >= 10) {
                     running = false;
                     cancelAnimationFrame(gameLoopId);
+                    clearInterval(enemyInterval);
                     const bgImage = new Image();
                     bgImage.onload = () => {
                         const scaleFactor = canvas.width / bgImage.width;
@@ -116,6 +134,7 @@ function checkCollisions() {
                         ctx.drawImage(bgImage, 0, (canvas.height - imgHeight) / 2, canvas.width, imgHeight);
                         resume.style.display = 'block';
                         resume.style.animation = 'scrollUp 20s linear forwards';
+                        backBtn.style.display = 'block';
                     };
                     bgImage.src = '2d_art_30.png';
                 }
@@ -137,8 +156,13 @@ startBtn.addEventListener('click', () => {
     scoreDisplay.textContent = '击毁敌机：0';
     resume.style.display = 'none'; resume.style.animation = 'none';
     startBtn.style.display = 'none';
-    setInterval(spawnEnemy, 1000);
+    backBtn.style.display = 'none';
+    enemyInterval = setInterval(spawnEnemy, 1000);
     gameLoop();
+});
+
+backBtn.addEventListener('click', () => {
+    startBtn.click();
 });
 </script>
 
