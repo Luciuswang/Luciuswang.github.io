@@ -10,7 +10,9 @@
         #info, #score { color: white; position: absolute; }
         #info { top: 10px; left: 10px; }
         #score { top: 10px; right: 10px; }
-        button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px; }
+        button#startBtn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px;
+        }
         #resume {
             color: white;
             position: absolute;
@@ -21,9 +23,10 @@
             text-align: center;
             font-size: 18px;
             display: none;
+            background: transparent;
         }
         #backBtn {
-            position: absolute;
+            position: fixed;
             right: 20px;
             bottom: 20px;
             padding: 10px 20px;
@@ -34,6 +37,7 @@
             font-size: 16px;
             cursor: pointer;
             display: none;
+            z-index: 9999;
         }
         @keyframes scrollUp {
             from { bottom: -100%; }
@@ -162,7 +166,17 @@ startBtn.addEventListener('click', () => {
 });
 
 backBtn.addEventListener('click', () => {
-    startBtn.click();
+    bullets = [];
+    enemies = [];
+    score = 0;
+    scoreDisplay.textContent = '击毁敌机：0';
+    resume.style.display = 'none';
+    resume.style.animation = 'none';
+    backBtn.style.display = 'none';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    running = true;
+    enemyInterval = setInterval(spawnEnemy, 1000);
+    gameLoop();
 });
 </script>
 
