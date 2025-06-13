@@ -47,8 +47,8 @@
   <h2>个人简历</h2>
   <p>姓名：王保民</p>
   <p>职业：美术总监</p>
-  <p>联系方式：luxi_007@163.com </p>
-  <p>曾任职于Garena与Ubisoft，参与FreeFire、Breakout、Hero of Newerth、Farcry3等项目，担任艺术总监，具备丰富的项目统筹与视觉艺术设计经验，擅长雕塑、贴图、特效与动画团队管理。</p>
+  <p>联系方式：luxi_007@163.com / 13564009387</p>
+  <p>曾任职于Garena与Ubisoft，参与FreeFire、Breakout、Hero of Newerth、Farcry3等项目，担任美术总监与SFX Artist，具备丰富的项目统筹与视觉艺术设计经验，擅长雕塑、贴图、特效与动画团队管理。</p>
 </div>
 <button id="backBtn">返回游戏</button>
 
@@ -67,7 +67,7 @@ let running = false;
 let score = 0;
 let gameLoopId;
 let enemyInterval;
-const resumeText = '王保民 男。2000年毕业于天津美术学院雕塑系。2014年作为艺术总监加入Garena，主导《FreeFire》等项目视觉开发。2000至2014年在Ubisoft参与《孤岛惊魂》《细胞分裂》等项目，任特效及贴图美术。擅长SFX、Shader、特效管理与团队建设。';
+const resumeText = '王保民 男 1977年生于上海。2000年毕业于天津美术学院雕塑系。2000至2014年在Ubisoft参与《孤岛惊魂》《细胞分裂》等项目，任特效及贴图美术。2014年加入Garena，主导《FreeFire》等项目视觉开发。擅长SFX、Shader、特效管理与团队建设。';
 
 canvas.addEventListener('mousemove', (e) => {
   plane.x = e.clientX - plane.width / 2;
@@ -134,7 +134,7 @@ function checkCollisions() {
             const scaleFactor = canvas.width / bgImage.width;
             const imgHeight = bgImage.height * scaleFactor;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(bgImage, 0, (canvas.height - imgHeight) / 2, canvas.width, imgHeight);
+            ctx.drawImage(bgImage, 0, 0, canvas.width, imgHeight);
             resume.style.display = 'block';
             resume.style.animation = 'scrollUp 20s linear forwards';
             backBtn.style.display = 'block';
@@ -157,7 +157,7 @@ startBtn.addEventListener('click', () => {
   scoreDisplay.textContent = '击毁敌机：0';
   resume.style.display = 'none'; resume.style.animation = 'none';
   startBtn.style.display = 'none'; backBtn.style.display = 'none';
-  enemyInterval = setInterval(spawnEnemy, 1000);
+  enemyInterval = setInterval(spawnEnemy, 10);
   gameLoop();
 });
 backBtn.addEventListener('click', () => {
@@ -169,7 +169,7 @@ backBtn.addEventListener('click', () => {
   backBtn.style.display = 'none';
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   running = true;
-  enemyInterval = setInterval(spawnEnemy, 1000);
+  enemyInterval = setInterval(spawnEnemy, 10);
   gameLoop();
 });
 </script>
