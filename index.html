@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>网页打飞机游戏</title>
 <style>
   body { margin: 0; padding: 0; overflow: hidden; background-color: #000; }
@@ -11,12 +11,13 @@
   #info { top: 10px; left: 10px; }
   #score { top: 10px; right: 10px; }
   button#startBtn {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px;
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); padding: 10px;
   }
   #resume {
     color: white; position: absolute; bottom: -100%; width: 50%; left: 50%;
-    transform: translateX(-50%); text-align: center; font-size: 18px; display: none;
-    background: transparent;
+    transform: translateX(-50%); text-align: center; font-size: 18px;
+    display: none; background: transparent;
   }
   #backBtn {
     position: fixed; right: 20px; bottom: 20px; padding: 10px 20px;
@@ -47,7 +48,8 @@
   <p>姓名：王保民</p>
   <p>职业：美术总监</p>
   <p>联系方式：luxi_007@163.com / 13564009387</p>
-  <p>曾任职于Garena与Ubisoft，参与FreeFire、Breakout、Hero of Newerth、Farcry3等项目，担任美术总监与SFX Artist，具备丰富的项目统筹与视觉艺术设计经验，擅长雕塑、贴图、特效与动画团队管理。</p>
+  <p>曾任职于Garena与Ubisoft，参与FreeFire、Breakout、Hero of Newerth、Farcry3等项目，
+  担任美术总监与SFX Artist，具备丰富的项目统筹与视觉艺术设计经验，擅长雕塑、贴图、特效与动画团队管理。</p>
 </div>
 <button id="backBtn">返回游戏</button>
 <script>
@@ -55,33 +57,44 @@ const canvas = document.getElementById('gameCanvas');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const ctx = canvas.getContext('2d');
+
 const startBtn = document.getElementById('startBtn');
 const resume = document.getElementById('resume');
 const backBtn = document.getElementById('backBtn');
 const scoreDisplay = document.getElementById('score');
+
 let bullets = [], enemies = [];
 let plane = { x: canvas.width / 2, y: canvas.height - 50, width: 40, height: 40 };
 let running = false;
 let score = 0;
-let gameLoopId;
-let enemyInterval;
+let gameLoopId, enemyIndex = 0, spawnTimer;
+
 const resumeText = '欢迎来的我的主页，先打完飞机然后点一下屏幕，等待片刻就能看见我哦';
+
 canvas.addEventListener('mousemove', (e) => {
   plane.x = e.clientX - plane.width / 2;
   plane.y = e.clientY - plane.height / 2;
 });
 canvas.addEventListener('click', () => {
-  bullets.push({ x: plane.x + plane.width / 2 - 2, y: plane.y });
+  if (running) bullets.push({ x: plane.x + plane.width / 2 - 2, y: plane.y });
 });
+
 function spawnEnemy() {
-  enemies.push({ x: Math.random() * (canvas.width - 30), y: -30 });
+  if (enemyIndex < resumeText.length) {
+    enemies.push({ x: Math.random() * (canvas.width - 30), y: -30, charIndex: enemyIndex });
+    enemyIndex++;
+  } else {
+    clearInterval(spawnTimer);
+  }
 }
+
 function drawPlane() {
   ctx.fillStyle = 'white';
   ctx.beginPath();
   ctx.arc(plane.x + plane.width / 2, plane.y + plane.height / 2, plane.width / 2, 0, Math.PI * 2);
   ctx.fill();
 }
+
 function drawBullets() {
   ctx.fillStyle = 'yellow';
   bullets.forEach((b, i) => {
@@ -90,6 +103,7 @@ function drawBullets() {
     if (b.y < 0) bullets.splice(i, 1);
   });
 }
+
 function drawEnemies() {
   ctx.fillStyle = 'red';
   enemies.forEach((e, i) => {
@@ -97,13 +111,13 @@ function drawEnemies() {
     ctx.fillRect(e.x, e.y, 30, 30);
     if (e.y > canvas.height) {
       running = false;
-      clearInterval(enemyInterval);
       alert('游戏失败，点击确定重新开始！');
       startBtn.style.display = 'block';
       cancelAnimationFrame(gameLoopId);
     }
   });
 }
+
 function showFloatingText(char, x, y) {
   const text = document.createElement('div');
   text.className = 'floating-text';
@@ -113,66 +127,80 @@ function showFloatingText(char, x, y) {
   document.body.appendChild(text);
   setTimeout(() => text.remove(), 1000);
 }
+
 function checkCollisions() {
   bullets.forEach((b, bi) => {
     enemies.forEach((e, ei) => {
       if (b.x < e.x + 30 && b.x + 4 > e.x && b.y < e.y + 30 && b.y + 10 > e.y) {
         bullets.splice(bi, 1);
         enemies.splice(ei, 1);
-        if (score < resumeText.length) {
-          showFloatingText(resumeText[score], e.x + 15, e.y);
+        if (e.charIndex !== undefined && resumeText[e.charIndex]) {
+          showFloatingText(resumeText[e.charIndex], e.x + 15, e.y);
         }
         score++;
         scoreDisplay.textContent = `击毁敌机：${score}`;
         if (score >= resumeText.length && enemies.length === 0) {
-  const bgImage = new Image();
-  bgImage.onload = () => {
-    running = false;
-    cancelAnimationFrame(gameLoopId);
-    clearInterval(enemyInterval);
-    const scaleFactor = canvas.width / bgImage.width;
-    const imgHeight = bgImage.height * scaleFactor;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(bgImage, 0, 0, canvas.width, imgHeight);
-    resume.style.display = 'block';
-    resume.offsetHeight;
-    resume.style.animation = 'scrollUp 20s linear forwards';
-    backBtn.style.display = 'block';
-  };
-  bgImage.src = '2d_art_30.png';
-}
+          endGameWithResume();
         }
       }
     });
   });
 }
+
 function gameLoop() {
   if (!running) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawPlane(); drawBullets(); drawEnemies(); checkCollisions();
+  drawPlane();
+  drawBullets();
+  drawEnemies();
+  checkCollisions();
   gameLoopId = requestAnimationFrame(gameLoop);
 }
+
+function endGameWithResume() {
+  running = false;
+  cancelAnimationFrame(gameLoopId);
+  const bgImage = new Image();
+  bgImage.onload = () => {
+    const scaleFactor = canvas.width / bgImage.width;
+    const imgHeight = bgImage.height * scaleFactor;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bgImage, 0, (canvas.height - imgHeight) / 2, canvas.width, imgHeight);
+    resume.style.display = 'block';
+    resume.offsetHeight;
+    resume.style.animation = 'scrollUp 20s linear forwards';
+    backBtn.style.display = 'block';
+  };
+  bgImage.src = '2d_art_30.png'; // 请将图片与此 index.html 放同目录
+}
+
 startBtn.addEventListener('click', () => {
-  running = true; score = 0;
-  bullets = []; enemies = [];
+  running = true;
+  score = 0;
+  bullets = [];
+  enemies = [];
+  enemyIndex = 0;
   scoreDisplay.textContent = '击毁敌机：0';
-  resume.style.display = 'none'; resume.style.animation = 'none';
-  startBtn.style.display = 'none'; backBtn.style.display = 'none';
-  spawnEnemy();
-  enemyInterval = setInterval(spawnEnemy, 1500);
+  resume.style.display = 'none';
+  resume.style.animation = 'none';
+  startBtn.style.display = 'none';
+  backBtn.style.display = 'none';
+  spawnTimer = setInterval(spawnEnemy, 1000);
   gameLoop();
 });
+
 backBtn.addEventListener('click', () => {
   bullets = [];
   enemies = [];
   score = 0;
+  enemyIndex = 0;
   scoreDisplay.textContent = '击毁敌机：0';
-  resume.style.display = 'none'; resume.style.animation = 'none';
+  resume.style.display = 'none';
+  resume.style.animation = 'none';
   backBtn.style.display = 'none';
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   running = true;
-  spawnEnemy();
-  enemyInterval = setInterval(spawnEnemy, 1500);
+  spawnTimer = setInterval(spawnEnemy, 1000);
   gameLoop();
 });
 </script>
