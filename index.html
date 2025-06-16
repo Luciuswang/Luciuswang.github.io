@@ -1,1064 +1,1126 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>王保民 · 创意艺术简历</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Noto Serif SC', serif;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>王保民 · 创意艺术简历</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Serif+SC:wght@400;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif SC', serif;
+        }
 
-body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-  color: #e6e6e6;
-  height: 100vh;
-  position: relative;
-  perspective: 1000px;
-}
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0a0f, #1e1e28);
+            color: #e6e6e6;
+            height: 100vh;
+            position: relative;
+            perspective: 1000px;
+        }
 
-.game-container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-}
+        .game-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-canvas {
-  display: block;
-  background: radial-gradient(ellipse at center, rgba(10, 15, 40, 0.8) 0%, rgba(5, 10, 30, 0.9) 100%);
-  box-shadow: 0 0 50px rgba(0, 0, 80, 0.5);
-  transform: translateZ(0);
-}
+        canvas {
+            display: block;
+            background: radial-gradient(ellipse at center, rgba(10, 15, 40, 0.8) 0%, rgba(5, 10, 30, 0.9) 100%);
+            transform: translateZ(0);
+        }
 
-#info {
-  position: absolute;
-  top: 15px;
-  left: 20px;
-  background: rgba(0, 0, 40, 0.7);
-  padding: 10px 15px;
-  border-radius: 10px;
-  border: 1px solid #5d8aa8;
-  font-size: 14px;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0 15px rgba(93, 138, 168, 0.4);
-  font-family: 'ZCOOL KuaiLe', sans-serif;
-}
+        #info {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #5d8aa8;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+            font-family: 'ZCOOL KuaiLe', sans-serif;
+            z-index: 10;
+        }
 
-#score {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  background: rgba(0, 0, 40, 0.7);
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #ffd700;
-  border: 1px solid #ffd700;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-}
+        #score {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd700;
+            border: 1px solid #ffd700;
+            backdrop-filter: blur(5px);
+            z-index: 10;
+        }
 
-#health {
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  background: rgba(0, 0, 40, 0.7);
-  padding: 10px 15px;
-  border-radius: 10px;
-  font-size: 16px;
-  color: #ff6b6b;
-  border: 1px solid #ff6b6b;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
-}
+        #health {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            color: #ff6b6b;
+            border: 1px solid #ff6b6b;
+            backdrop-filter: blur(5px);
+            z-index: 10;
+        }
 
-.screen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: rgba(10, 15, 40, 0.95);
-  backdrop-filter: blur(10px);
-  z-index: 100;
-  transition: opacity 0.5s;
-}
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(10, 15, 40, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            transition: opacity 0.5s;
+        }
 
-#startScreen {
-  z-index: 200;
-  background: linear-gradient(rgba(10, 15, 40, 0.9), rgba(5, 10, 30, 0.95));
-}
+        #startScreen {
+            z-index: 200;
+            background: linear-gradient(rgba(10, 15, 40, 0.9), rgba(5, 10, 30, 0.95));
+        }
 
-#resumeScreen {
-  display: none;
-  overflow-y: auto;
-  padding: 0;
-  background: linear-gradient(rgba(10, 15, 40, 0.95), rgba(5, 10, 30, 0.95));
-}
+        #resumeScreen {
+            display: none;
+            overflow-y: auto;
+            padding: 0;
+            background: linear-gradient(rgba(10, 15, 40, 0.95), rgba(5, 10, 30, 0.95));
+        }
 
-.title {
-  font-size: 3.5rem;
-  margin-bottom: 20px;
-  background: linear-gradient(to right, #d4af37, #ffd700);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-  font-family: 'ZCOOL KuaiLe', sans-serif;
-  letter-spacing: 2px;
-}
+        .title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #d4af37, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            font-family: 'Anton', sans-serif;
+            letter-spacing: 2px;
+        }
 
-.subtitle {
-  font-size: 1.5rem;
-  margin-bottom: 40px;
-  color: #a1c4fd;
-  max-width: 700px;
-  text-align: center;
-  line-height: 1.6;
-  font-weight: 300;
-}
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            color: #a1c4fd;
+            max-width: 700px;
+            text-align: center;
+            line-height: 1.6;
+            font-weight: 300;
+        }
 
-.btn {
-  background: linear-gradient(to right, #d4af37, #ffd700);
-  color: #1a1a2e;
-  border: none;
-  padding: 15px 45px;
-  font-size: 1.2rem;
-  border-radius: 50px;
-  cursor: pointer;
-  margin: 10px;
-  transition: all 0.3s;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  position: relative;
-  overflow: hidden;
-  font-weight: bold;
-  letter-spacing: 1px;
-  font-family: 'ZCOOL KuaiLe', sans-serif;
-}
+        .btn {
+            background: linear-gradient(to right, #d4af37, #ffd700);
+            color: #1a1a2e;
+            border: none;
+            padding: 15px 45px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
+            letter-spacing: 1px;
+            font-family: 'ZCOOL KuaiLe', sans-serif;
+            z-index: 10;
+        }
 
-.btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6);
-}
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6);
+        }
 
-.btn:active {
-  transform: translateY(1px);
-}
+        .btn:active {
+            transform: translateY(1px);
+        }
 
-.btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to right, #ffd700, #d4af37);
-  opacity: 0;
-  transition: opacity 0.3s;
-  z-index: -1;
-}
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, #ffd700, #d4af37);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
 
-.btn:hover::after {
-  opacity: 1;
-}
+        .btn:hover::after {
+            opacity: 1;
+        }
 
-.resume-content {
-  max-width: 900px;
-  width: 90%;
-  background: rgba(20, 25, 60, 0.8);
-  border-radius: 15px;
-  padding: 40px;
-  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  backdrop-filter: blur(10px);
-  margin: 40px auto;
-}
+        .resume-content {
+            max-width: 900px;
+            width: 90%;
+            background: rgba(20, 25, 40, 0.8);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(10px);
+            margin: 40px auto;
+        }
 
-.resume-header {
-  text-align: center;
-  margin-bottom: 40px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-  position: relative;
-}
+        .resume-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            position: relative;
+        }
 
-.header-art {
-  width: 100%;
-  height: 200px;
-  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://raw.githubusercontent.com/Luciuswang/Luciuswang.github.io/main/2d_art_100.jpg') center/cover;
-  border-radius: 10px;
-  margin-bottom: 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
+        .header-art {
+            width: 100%;
+            height: 300px;
+            background: 
+                linear-gradient(rgba(0,0,0,0.6), 
+                url('https://raw.githubusercontent.com/Luciuswang/Luciuswang.github.io/main/2d_art_100.jpg') center/cover;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
 
-.resume-header h2 {
-  font-size: 2.8rem;
-  margin-bottom: 10px;
-  color: #d4af37;
-  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-  font-family: 'ZCOOL KuaiLe', sans-serif;
-}
+        .header-art::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, rgba(10,15,40,0.9), transparent);
+        }
 
-.resume-section {
-  margin-bottom: 35px;
-  position: relative;
-  padding-left: 20px;
-  border-left: 3px solid rgba(212, 175, 55, 0.5);
-}
+        .resume-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            color: #d4af37;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            font-family: 'Anton', sans-serif;
+        }
 
-.resume-section h3 {
-  font-size: 1.8rem;
-  color: #ffd700;
-  margin-bottom: 20px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-  font-family: 'ZCOOL KuaiLe', sans-serif;
-}
+        .resume-section {
+            margin-bottom: 35px;
+            position: relative;
+            padding-left: 20px;
+            border-left: 3px solid rgba(212, 175, 55, 0.5);
+        }
 
-.resume-section p {
-  line-height: 1.8;
-  margin-bottom: 15px;
-  color: #e6e6e6;
-  font-size: 1.1rem;
-}
+        .resume-section h3 {
+            font-size: 1.8rem;
+            color: #ffd700;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            font-family: 'Anton', sans-serif;
+        }
 
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 25px;
-  margin-top: 25px;
-}
+        .resume-section p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #e6e6e6;
+            font-size: 1.1rem;
+        }
 
-.project-card {
-  background: rgba(30, 40, 80, 0.6);
-  border-radius: 10px;
-  padding: 20px;
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-}
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
 
-.project-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 5px;
-  background: linear-gradient(to right, #d4af37, #ffd700);
-}
+        .project-card {
+            background: rgba(30, 40, 60, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background-size: cover;
+            background-position: center;
+        }
 
-.project-card:hover {
-  transform: translateY(-5px);
-  border-color: #d4af37;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-}
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(10,15,40,0.9), transparent);
+            z-index: 1;
+        }
 
-.project-card h4 {
-  color: #ffd700;
-  margin-bottom: 15px;
-  font-size: 1.4rem;
-}
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
 
-.project-card p {
-  color: #cce7ff;
-  font-size: 1rem;
-}
+        .project-card h4 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            position: relative;
+            z-index: 2;
+        }
 
-.floating-text {
-  position: absolute;
-  color: #ffd700;
-  font-size: 28px;
-  font-weight: bold;
-  pointer-events: none;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-  animation: rise 1.5s ease-out forwards, glow 1.5s infinite alternate;
-  font-family: 'ZCOOL KuaiLe', sans-serif;
-  z-index: 50;
-}
+        .project-card p {
+            color: #cce7ff;
+            font-size: 1rem;
+            position: relative;
+            z-index: 2;
+        }
 
-@keyframes rise {
-  0% { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
-}
+        .floating-text {
+            position: absolute;
+            color: #ffd700;
+            font-size: 28px;
+            font-weight: bold;
+            pointer-events: none;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            animation: rise 1.5s ease-out forwards;
+            font-family: 'ZCOOL KuaiLe', sans-serif;
+            z-index: 50;
+        }
 
-@keyframes glow {
-  from { text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700; }
-  to { text-shadow: 0 0 15px #ffd700, 0 0 30px #ffd700; }
-}
+        @keyframes rise {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
+        }
 
-.particle {
-  position: absolute;
-  background: rgba(255, 215, 0, 0.7);
-  border-radius: 50%;
-  pointer-events: none;
-  animation: particle-rise 1s ease-out forwards;
-  z-index: 10;
-}
+        .particle {
+            position: absolute;
+            background: rgba(255, 215, 0, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-rise 1s ease-out forwards;
+            z-index: 10;
+        }
 
-@keyframes particle-rise {
-  0% { opacity: 1; transform: translate(0, 0) scale(0.5); }
-  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
-}
+        @keyframes particle-rise {
+            0% { opacity: 1; transform: translate(0, 0) scale(0.5); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+        }
 
-#stars {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-}
+        #stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
 
-.star {
-  position: absolute;
-  background: white;
-  border-radius: 50%;
-  animation: twinkle var(--duration) infinite ease-in-out;
-}
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
 
-@keyframes twinkle {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 1; }
-}
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
 
-.artistic-border {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  border: 2px solid rgba(212, 175, 55, 0.3);
-  border-radius: 15px;
-  pointer-events: none;
-  z-index: -1;
-  box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.2);
-}
+        .artistic-border {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            pointer-events: none;
+            z-index: -1;
+        }
 
-.artistic-corner {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-}
+        .performance-warning {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 107, 107, 0.8);
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            display: none;
+            z-index: 100;
+        }
 
-.artistic-corner:nth-child(1) {
-  top: 0;
-  left: 0;
-  border-top: 3px solid #d4af37;
-  border-left: 3px solid #d4af37;
-}
+        .mobile-controls {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            display: none;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 10;
+        }
 
-.artistic-corner:nth-child(2) {
-  top: 0;
-  right: 0;
-  border-top: 3px solid #d4af37;
-  border-right: 3px solid #d4af37;
-}
+        .control-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.3);
+            border: 2px solid #d4af37;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+            backdrop-filter: blur(5px);
+        }
 
-.artistic-corner:nth-child(3) {
-  bottom: 0;
-  left: 0;
-  border-bottom: 3px solid #d4af37;
-  border-left: 3px solid #d4af37;
-}
-
-.artistic-corner:nth-child(4) {
-  bottom: 0;
-  right: 0;
-  border-bottom: 3px solid #d4af37;
-  border-right: 3px solid #d4af37;
-}
-
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
-}
-
-.floating {
-  animation: float 3s ease-in-out infinite;
-}
-
-.performance-warning {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 107, 107, 0.8);
-  padding: 8px 15px;
-  border-radius: 5px;
-  font-size: 12px;
-  display: none;
-}
-</style>
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            .subtitle {
+                font-size: 1.1rem;
+                padding: 0 20px;
+            }
+            .mobile-controls {
+                display: flex;
+            }
+            .resume-content {
+                padding: 20px;
+            }
+            .resume-header h2 {
+                font-size: 2rem;
+            }
+            .resume-section h3 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="game-container">
-    <div id="stars"></div>
-    <canvas id="gameCanvas"></canvas>
-    
-    <div class="artistic-border"></div>
-    <div class="artistic-corner"></div>
-    <div class="artistic-corner"></div>
-    <div class="artistic-corner"></div>
-    <div class="artistic-corner"></div>
-    
-    <div id="info">
-      <i class="fas fa-mouse"></i> 移动鼠标 | 
-      <i class="fas fa-mouse-pointer"></i> 点击射击 | 
-      <i class="fas fa-bullseye"></i> 击落敌机解锁简历
-    </div>
-    <div id="score">击毁敌机: <span id="scoreValue">0</span>/10</div>
-    <div id="health">生命值: <span id="healthValue">100</span>%</div>
-    
-    <div id="performanceWarning" class="performance-warning">
-      <i class="fas fa-exclamation-triangle"></i> 性能提示：检测到卡顿，已自动优化
-    </div>
-    
-    <div id="startScreen" class="screen">
-      <h1 class="title floating">王保民 · 创意艺术简历</h1>
-      <p class="subtitle">通过射击游戏解锁美术总监的职业生涯 - 移动鼠标控制飞船，点击射击敌机</p>
-      <button id="startBtn" class="btn">开始游戏</button>
-      <div style="position: absolute; bottom: 30px; color: #5d8aa8; font-size: 14px;">
-        美术总监 | 特效艺术家 | 团队领导者
-      </div>
-    </div>
-    
-    <div id="resumeScreen" class="screen">
-      <div class="resume-content">
-        <div class="resume-header">
-          <div class="header-art"></div>
-          <h2>王保民 - 美术总监</h2>
-          <p>luxi_007@163.com | 13564009387</p>
+    <div class="game-container">
+        <div id="stars"></div>
+        <canvas id="gameCanvas"></canvas>
+        
+        <div class="artistic-border"></div>
+        
+        <div id="info">
+            <i class="fas fa-mouse"></i> 移动鼠标 | 
+            <i class="fas fa-mouse-pointer"></i> 点击射击 | 
+            <i class="fas fa-bullseye"></i> 击落敌机解锁简历
+        </div>
+        <div id="score">击毁敌机: <span id="scoreValue">0</span>/10</div>
+        <div id="health">生命值: <span id="healthValue">100</span>%</div>
+        
+        <div id="performanceWarning" class="performance-warning">
+            <i class="fas fa-exclamation-triangle"></i> 性能提示：已启用优化模式
         </div>
         
-        <div class="resume-section">
-          <h3><i class="fas fa-user"></i> 个人简介</h3>
-          <p>1977年生于上海，2000年毕业于天津美术学院雕塑系。拥有20+年游戏行业经验，专注于游戏美术、特效与团队管理。将艺术与技术完美结合，创造出令人难忘的视觉体验。</p>
-        </div>
-        
-        <div class="resume-section">
-          <h3><i class="fas fa-briefcase"></i> 工作经历</h3>
-          <p><strong>Garena (2014-至今)</strong> - 美术总监</p>
-          <p>主导《FreeFire》视觉开发，负责整体美术风格把控，管理50+人美术团队。项目全球用户超10亿，成为移动端最成功的射击游戏之一。</p>
-          
-          <p><strong>Ubisoft (2000-2014)</strong> - 高级特效美术师</p>
-          <p>参与《孤岛惊魂3》、《细胞分裂》等AAA级项目，负责特效系统设计与实现。开发了多项创新视觉技术，提升了游戏沉浸感。</p>
-        </div>
-        
-        <div class="resume-section">
-          <h3><i class="fas fa-star"></i> 专业技能</h3>
-          <div class="skills">
-            <p>• 美术总监 & 团队管理 | • 特效设计(SFX) | • 着色器开发(Shader)</p>
-            <p>• 3D建模与雕刻 | • 游戏动画 | • 视觉风格开发</p>
-            <p>• 技术美术 | • 性能优化 | • 跨团队协作</p>
-          </div>
-        </div>
-        
-        <div class="resume-section">
-          <h3><i class="fas fa-gamepad"></i> 代表作品</h3>
-          <div class="project-grid">
-            <div class="project-card">
-              <h4>FreeFire</h4>
-              <p>全球现象级移动端大逃杀游戏，下载量超10亿</p>
+        <div class="mobile-controls">
+            <div class="control-btn" id="leftBtn">
+                <i class="fas fa-arrow-left"></i>
             </div>
-            <div class="project-card">
-              <h4>孤岛惊魂3</h4>
-              <p>开放世界第一人称射击游戏，视觉风格开创者</p>
+            <div class="control-btn" id="shootBtn">
+                <i class="fas fa-bullseye"></i>
             </div>
-            <div class="project-card">
-              <h4>细胞分裂</h4>
-              <p>潜行动作游戏系列，电影级视觉效果</p>
+            <div class="control-btn" id="rightBtn">
+                <i class="fas fa-arrow-right"></i>
             </div>
-            <div class="project-card">
-              <h4>Breakout</h4>
-              <p>多人在线射击游戏，创新美术风格</p>
-            </div>
-          </div>
         </div>
         
-        <div class="resume-section">
-          <h3><i class="fas fa-palette"></i> 艺术理念</h3>
-          <p>"游戏美术不仅是视觉表现，更是情感传递的媒介。我追求在技术限制下创造无限可能，让每个像素都承载故事，每个特效都唤起情感。"</p>
+        <div id="startScreen" class="screen">
+            <h1 class="title">王保民 · 创意艺术简历</h1>
+            <p class="subtitle">通过射击游戏解锁美术总监的职业生涯 - 移动鼠标控制飞船，点击射击敌机</p>
+            <button id="startBtn" class="btn">开始游戏</button>
+            <div style="position: absolute; bottom: 30px; color: #5d8aa8; font-size: 14px;">
+                美术总监 | 特效艺术家 | 团队领导者
+            </div>
         </div>
-      </div>
-      <button id="backBtn" class="btn">返回游戏</button>
+        
+        <div id="resumeScreen" class="screen">
+            <div class="resume-content">
+                <div class="resume-header">
+                    <div class="header-art"></div>
+                    <h2>王保民 - 美术总监</h2>
+                    <p>luxi_007@163.com | 13564009387</p>
+                </div>
+                
+                <div class="resume-section">
+                    <h3><i class="fas fa-user"></i> 个人简介</h3>
+                    <p>1977年生于上海，2000年毕业于天津美术学院雕塑系。拥有20+年游戏行业经验，专注于游戏美术、特效与团队管理。将艺术与技术完美结合，创造出令人难忘的视觉体验。</p>
+                </div>
+                
+                <div class="resume-section">
+                    <h3><i class="fas fa-briefcase"></i> 工作经历</h3>
+                    <p><strong>Garena (2014-至今)</strong> - 美术总监</p>
+                    <p>主导《FreeFire》视觉开发，负责整体美术风格把控，管理50+人美术团队。项目全球用户超10亿，成为移动端最成功的射击游戏之一。</p>
+                    
+                    <p><strong>Ubisoft (2000-2014)</strong> - 高级特效美术师</p>
+                    <p>参与《孤岛惊魂3》、《细胞分裂》等AAA级项目，负责特效系统设计与实现。开发了多项创新视觉技术，提升了游戏沉浸感。</p>
+                </div>
+                
+                <div class="resume-section">
+                    <h3><i class="fas fa-star"></i> 专业技能</h3>
+                    <div class="skills">
+                        <p>• 美术总监 & 团队管理 | • 特效设计(SFX) | • 着色器开发(Shader)</p>
+                        <p>• 3D建模与雕刻 | • 游戏动画 | • 视觉风格开发</p>
+                        <p>• 技术美术 | • 性能优化 | • 跨团队协作</p>
+                    </div>
+                </div>
+                
+                <div class="resume-section">
+                    <h3><i class="fas fa-gamepad"></i> 代表作品</h3>
+                    <div class="project-grid">
+                        <div class="project-card" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')">
+                            <h4>FreeFire</h4>
+                            <p>全球现象级移动端大逃杀游戏，下载量超10亿</p>
+                        </div>
+                        <div class="project-card" style="background-image: url('https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')">
+                            <h4>孤岛惊魂3</h4>
+                            <p>开放世界第一人称射击游戏，视觉风格开创者</p>
+                        </div>
+                        <div class="project-card" style="background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80')">
+                            <h4>细胞分裂</h4>
+                            <p>潜行动作游戏系列，电影级视觉效果</p>
+                        </div>
+                        <div class="project-card" style="background-image: url('https://images.unsplash.com/photo-1552820728-8b83bb6b773f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')">
+                            <h4>Breakout</h4>
+                            <p>多人在线射击游戏，创新美术风格</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="resume-section">
+                    <h3><i class="fas fa-palette"></i> 艺术理念</h3>
+                    <p>"游戏美术不仅是视觉表现，更是情感传递的媒介。我追求在技术限制下创造无限可能，让每个像素都承载故事，每个特效都唤起情感。"</p>
+                </div>
+            </div>
+            <button id="backBtn" class="btn">返回游戏</button>
+        </div>
     </div>
-  </div>
 
-<script>
-  // 初始化画布和上下文
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-  const startScreen = document.getElementById('startScreen');
-  const resumeScreen = document.getElementById('resumeScreen');
-  const startBtn = document.getElementById('startBtn');
-  const backBtn = document.getElementById('backBtn');
-  const scoreDisplay = document.getElementById('scoreValue');
-  const healthDisplay = document.getElementById('healthValue');
-  const perfWarning = document.getElementById('performanceWarning');
-  
-  // 设置画布尺寸
-  function resizeCanvas() {
-    canvas.width = Math.min(1920, window.innerWidth);
-    canvas.height = Math.min(1080, window.innerHeight);
-  }
-  
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-  
-  // 游戏状态变量
-  let gameState = {
-    bullets: [],
-    enemies: [],
-    particles: [],
-    plane: { x: canvas.width / 2, y: canvas.height - 100, width: 60, height: 40 },
-    running: false,
-    score: 0,
-    health: 100,
-    gameLoopId: null,
-    enemyInterval: null,
-    lastFrameTime: 0,
-    fps: 0,
-    lowFpsCount: 0,
-    resumeText: '王保民 男 1977年生于上海。2000年毕业于天津美术学院雕塑系。2000至2014年在Ubisoft参与《孤岛惊魂》《细胞分裂》等项目，任特效及贴图美术。2014年加入Garena，主导《FreeFire》等项目视觉开发。擅长SFX、Shader、特效管理与团队建设。'
-  };
-  
-  // 对象池
-  const bulletPool = [];
-  const enemyPool = [];
-  const particlePool = [];
-  
-  // 创建星空背景
-  function createStars() {
-    const starsContainer = document.getElementById('stars');
-    starsContainer.innerHTML = '';
-    
-    const starCount = Math.floor((canvas.width * canvas.height) / 2000);
-    
-    for (let i = 0; i < starCount; i++) {
-      const star = document.createElement('div');
-      star.className = 'star';
-      star.style.left = `${Math.random() * 100}%`;
-      star.style.top = `${Math.random() * 100}%`;
-      star.style.width = `${Math.random() * 3}px`;
-      star.style.height = star.style.width;
-      star.style.opacity = Math.random() * 0.8 + 0.2;
-      star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
-      starsContainer.appendChild(star);
-    }
-  }
-  
-  // 性能监控
-  function monitorPerformance(now) {
-    if (gameState.lastFrameTime) {
-      const delta = now - gameState.lastFrameTime;
-      gameState.fps = Math.round(1000 / delta);
-      
-      // 低FPS处理
-      if (gameState.fps < 45) {
-        gameState.lowFpsCount++;
-        if (gameState.lowFpsCount > 10) {
-          perfWarning.style.display = 'block';
-          // 降低特效质量
-          gameState.particles = gameState.particles.slice(0, Math.floor(gameState.particles.length * 0.7));
-        }
-      } else {
-        gameState.lowFpsCount = 0;
-        perfWarning.style.display = 'none';
-      }
-    }
-    gameState.lastFrameTime = now;
-  }
-  
-  // 初始化游戏
-  function initGame() {
-    // 重置游戏状态
-    gameState.bullets = [];
-    gameState.enemies = [];
-    gameState.particles = [];
-    gameState.plane.x = canvas.width / 2;
-    gameState.plane.y = canvas.height - 100;
-    gameState.score = 0;
-    gameState.health = 100;
-    gameState.lowFpsCount = 0;
-    scoreDisplay.textContent = gameState.score;
-    healthDisplay.textContent = gameState.health;
-    
-    startScreen.style.display = 'none';
-    resumeScreen.style.display = 'none';
-    perfWarning.style.display = 'none';
-    gameState.running = true;
-    
-    // 清除之前的敌机生成器
-    if (gameState.enemyInterval) {
-      clearInterval(gameState.enemyInterval);
-    }
-    
-    // 设置敌机生成器（难度随分数增加）
-    gameState.enemyInterval = setInterval(() => {
-      const baseSpeed = 2 + Math.min(gameState.score / 10, 3);
-      const spawnRate = Math.max(500, 2000 - gameState.score * 50);
-      
-      if (Math.random() < 0.7) {
-        let enemy;
-        if (enemyPool.length > 0) {
-          enemy = enemyPool.pop();
-          Object.assign(enemy, {
-            x: Math.random() * (canvas.width - 40),
-            y: -40,
-            width: 40,
-            height: 40,
-            speed: baseSpeed + Math.random() * 1,
-            health: 1
-          });
-        } else {
-          enemy = {
-            x: Math.random() * (canvas.width - 40),
-            y: -40,
-            width: 40,
-            height: 40,
-            speed: baseSpeed + Math.random() * 1,
-            health: 1
-          };
-        }
-        gameState.enemies.push(enemy);
-      }
-      
-      // 偶尔生成更强大的敌机
-      if (Math.random() < 0.1) {
-        let enemy;
-        if (enemyPool.length > 0) {
-          enemy = enemyPool.pop();
-          Object.assign(enemy, {
-            x: Math.random() * (canvas.width - 60),
-            y: -60,
-            width: 60,
-            height: 60,
-            speed: baseSpeed * 0.7,
-            health: 3
-          });
-        } else {
-          enemy = {
-            x: Math.random() * (canvas.width - 60),
-            y: -60,
-            width: 60,
-            height: 60,
-            speed: baseSpeed * 0.7,
-            health: 3
-          };
-        }
-        gameState.enemies.push(enemy);
-      }
-    }, 800);
-    
-    // 开始游戏循环
-    if (gameState.gameLoopId) {
-      cancelAnimationFrame(gameState.gameLoopId);
-    }
-    gameLoop();
-  }
-  
-  // 绘制玩家飞机
-  function drawPlane() {
-    ctx.save();
-    
-    // 飞机主体 - 艺术风格设计
-    ctx.fillStyle = '#d4af37';
-    ctx.beginPath();
-    ctx.moveTo(gameState.plane.x, gameState.plane.y + gameState.plane.height);
-    ctx.lineTo(gameState.plane.x + gameState.plane.width, gameState.plane.y + gameState.plane.height);
-    ctx.lineTo(gameState.plane.x + gameState.plane.width / 2, gameState.plane.y);
-    ctx.closePath();
-    ctx.fill();
-    
-    // 飞机细节 - 艺术装饰
-    ctx.fillStyle = '#ffd700';
-    ctx.fillRect(gameState.plane.x + 15, gameState.plane.y + 10, 30, 15);
-    
-    // 艺术装饰线条
-    ctx.strokeStyle = '#ffd700';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(gameState.plane.x + 5, gameState.plane.y + 30);
-    ctx.lineTo(gameState.plane.x + gameState.plane.width - 5, gameState.plane.y + 30);
-    ctx.stroke();
-    
-    // 飞机引擎火焰
-    ctx.fillStyle = '#ff6b6b';
-    ctx.beginPath();
-    ctx.ellipse(gameState.plane.x + gameState.plane.width / 2, 
-                gameState.plane.y + gameState.plane.height + 5, 
-                5, 15, 0, 0, Math.PI * 2);
-    ctx.fill();
-    
-    ctx.restore();
-  }
-  
-  // 绘制子弹
-  function drawBullets() {
-    ctx.fillStyle = '#ffd700';
-    
-    for (let i = gameState.bullets.length - 1; i >= 0; i--) {
-      const b = gameState.bullets[i];
-      b.y -= 8;
-      
-      // 子弹发光效果
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, 4, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // 光晕
-      const gradient = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 10);
-      gradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
-      gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, 10, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-      
-      // 移除超出屏幕的子弹
-      if (b.y < 0) {
-        gameState.bullets.splice(i, 1);
-        bulletPool.push(b);
-      }
-    }
-  }
-  
-  // 绘制敌机 - 艺术风格
-  function drawEnemies() {
-    for (let i = gameState.enemies.length - 1; i >= 0; i--) {
-      const e = gameState.enemies[i];
-      e.y += e.speed;
-      
-      // 敌机 - 抽象艺术设计
-      ctx.save();
-      ctx.fillStyle = e.health > 1 ? '#b22222' : '#dc143c';
-      ctx.beginPath();
-      ctx.moveTo(e.x, e.y);
-      ctx.lineTo(e.x + e.width, e.y);
-      ctx.lineTo(e.x + e.width - 15, e.y + e.height);
-      ctx.lineTo(e.x + 15, e.y + e.height);
-      ctx.closePath();
-      ctx.fill();
-      
-      // 敌机细节 - 艺术图案
-      ctx.fillStyle = '#ff8a8a';
-      ctx.fillRect(e.x + 10, e.y + 5, e.width - 20, 8);
-      
-      // 强大的敌机有额外艺术细节
-      if (e.health > 1) {
-        ctx.fillStyle = '#ff8a8a';
-        ctx.fillRect(e.x + 5, e.y + 20, e.width - 10, 10);
+    <script>
+        // 高性能游戏实现
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startScreen = document.getElementById('startScreen');
+        const resumeScreen = document.getElementById('resumeScreen');
+        const startBtn = document.getElementById('startBtn');
+        const backBtn = document.getElementById('backBtn');
+        const scoreDisplay = document.getElementById('scoreValue');
+        const healthDisplay = document.getElementById('healthValue');
+        const perfWarning = document.getElementById('performanceWarning');
+        const leftBtn = document.getElementById('leftBtn');
+        const rightBtn = document.getElementById('rightBtn');
+        const shootBtn = document.getElementById('shootBtn');
         
-        // 艺术装饰
-        ctx.strokeStyle = '#ffd700';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(e.x + e.width/2, e.y + e.height/2, 15, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-      
-      ctx.restore();
-      
-      // 移除超出屏幕的敌机
-      if (e.y > canvas.height) {
-        gameState.enemies.splice(i, 1);
-        enemyPool.push(e);
-      }
-    }
-  }
-  
-  // 绘制粒子效果 - 优化性能
-  function drawParticles() {
-    for (let i = gameState.particles.length - 1; i >= 0; i--) {
-      const p = gameState.particles[i];
-      p.life--;
-      
-      if (p.life <= 0) {
-        gameState.particles.splice(i, 1);
-        particlePool.push(p);
-        continue;
-      }
-      
-      ctx.save();
-      ctx.globalAlpha = p.life / 100;
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-      
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.05; // 重力效果
-    }
-  }
-  
-  // 显示浮动文字效果 - 艺术字体
-  function showFloatingText(char, x, y) {
-    const text = document.createElement('div');
-    text.className = 'floating-text';
-    text.style.left = `${x}px`;
-    text.style.top = `${y}px`;
-    text.textContent = char;
-    document.body.appendChild(text);
-    
-    setTimeout(() => {
-      text.remove();
-    }, 1500);
-  }
-  
-  // 创建粒子爆炸效果 - 使用对象池
-  function createExplosion(x, y, color = '#ffd700') {
-    const particleCount = gameState.fps > 45 ? 20 : 12;
-    
-    for (let i = 0; i < particleCount; i++) {
-      let p;
-      if (particlePool.length > 0) {
-        p = particlePool.pop();
-        Object.assign(p, {
-          x: x,
-          y: y,
-          vx: (Math.random() - 0.5) * 4,
-          vy: (Math.random() - 0.5) * 4 - 2,
-          size: Math.random() * 3 + 1,
-          color: color,
-          life: Math.random() * 50 + 50
-        });
-      } else {
-        p = {
-          x: x,
-          y: y,
-          vx: (Math.random() - 0.5) * 4,
-          vy: (Math.random() - 0.5) * 4 - 2,
-          size: Math.random() * 3 + 1,
-          color: color,
-          life: Math.random() * 50 + 50
+        // 设置画布尺寸
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        // 游戏状态变量
+        let gameState = {
+            bullets: [],
+            enemies: [],
+            particles: [],
+            plane: { x: canvas.width / 2, y: canvas.height - 100, width: 60, height: 40 },
+            running: false,
+            score: 0,
+            health: 100,
+            gameLoopId: null,
+            enemyInterval: null,
+            lastFrameTime: 0,
+            fps: 0,
+            lowFpsCount: 0,
+            resumeText: '王保民 男 1977年生于上海。2000年毕业于天津美术学院雕塑系。2000至2014年在Ubisoft参与《孤岛惊魂》《细胞分裂》等项目，任特效及贴图美术。2014年加入Garena，主导《FreeFire》等项目视觉开发。擅长SFX、Shader、特效管理与团队建设。',
+            isMobile: false,
+            planeSpeed: 8,
+            touchX: 0
         };
-      }
-      gameState.particles.push(p);
-    }
-  }
-  
-  // 碰撞检测
-  function checkCollisions() {
-    // 子弹与敌机碰撞
-    for (let i = gameState.bullets.length - 1; i >= 0; i--) {
-      const b = gameState.bullets[i];
-      
-      for (let j = gameState.enemies.length - 1; j >= 0; j--) {
-        const e = gameState.enemies[j];
         
-        if (b.x > e.x && b.x < e.x + e.width &&
-            b.y > e.y && b.y < e.y + e.height) {
-          // 击中敌机
-          createExplosion(b.x, b.y);
-          gameState.bullets.splice(i, 1);
-          bulletPool.push(b);
-          
-          e.health--;
-          if (e.health <= 0) {
-            // 敌机被摧毁
-            createExplosion(e.x + e.width/2, e.y + e.height/2, '#dc143c');
-            gameState.enemies.splice(j, 1);
-            enemyPool.push(e);
-            gameState.score++;
+        // 对象池
+        const bulletPool = [];
+        const enemyPool = [];
+        const particlePool = [];
+        
+        // 创建星空背景
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            starsContainer.innerHTML = '';
+            
+            const starCount = Math.floor((canvas.width * canvas.height) / 2500);
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 2}px`;
+                star.style.height = star.style.width;
+                star.style.opacity = Math.random() * 0.8 + 0.2;
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // 性能监控
+        function monitorPerformance(now) {
+            if (gameState.lastFrameTime) {
+                const delta = now - gameState.lastFrameTime;
+                gameState.fps = Math.round(1000 / delta);
+                
+                // 低FPS处理
+                if (gameState.fps < 45) {
+                    gameState.lowFpsCount++;
+                    if (gameState.lowFpsCount > 10) {
+                        perfWarning.style.display = 'block';
+                        // 降低特效质量
+                        gameState.particles = gameState.particles.slice(0, Math.floor(gameState.particles.length * 0.6));
+                    }
+                } else {
+                    gameState.lowFpsCount = 0;
+                    perfWarning.style.display = 'none';
+                }
+            }
+            gameState.lastFrameTime = now;
+        }
+        
+        // 初始化游戏
+        function initGame() {
+            // 检测移动设备
+            gameState.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // 重置游戏状态
+            gameState.bullets = [];
+            gameState.enemies = [];
+            gameState.particles = [];
+            gameState.plane.x = canvas.width / 2;
+            gameState.plane.y = canvas.height - 100;
+            gameState.score = 0;
+            gameState.health = 100;
+            gameState.lowFpsCount = 0;
             scoreDisplay.textContent = gameState.score;
+            healthDisplay.textContent = gameState.health;
             
-            // 显示浮动文字
-            if (gameState.score < gameState.resumeText.length) {
-              showFloatingText(gameState.resumeText[gameState.score], e.x + e.width/2, e.y + e.height/2);
+            startScreen.style.display = 'none';
+            resumeScreen.style.display = 'none';
+            perfWarning.style.display = 'none';
+            gameState.running = true;
+            
+            // 清除之前的敌机生成器
+            if (gameState.enemyInterval) {
+                clearInterval(gameState.enemyInterval);
             }
             
-            // 检查游戏胜利条件
-            if (gameState.score >= 10) {
-              gameState.running = false;
-              clearInterval(gameState.enemyInterval);
-              cancelAnimationFrame(gameState.gameLoopId);
-              
-              // 显示简历
-              setTimeout(() => {
-                resumeScreen.style.display = 'flex';
-              }, 1000);
+            // 设置敌机生成器（难度随分数增加）
+            gameState.enemyInterval = setInterval(() => {
+                const baseSpeed = 2 + Math.min(gameState.score / 10, 3);
+                const spawnRate = Math.max(500, 2000 - gameState.score * 50);
+                
+                if (Math.random() < 0.7) {
+                    let enemy;
+                    if (enemyPool.length > 0) {
+                        enemy = enemyPool.pop();
+                        Object.assign(enemy, {
+                            x: Math.random() * (canvas.width - 40),
+                            y: -40,
+                            width: 40,
+                            height: 40,
+                            speed: baseSpeed + Math.random() * 1,
+                            health: 1
+                        });
+                    } else {
+                        enemy = {
+                            x: Math.random() * (canvas.width - 40),
+                            y: -40,
+                            width: 40,
+                            height: 40,
+                            speed: baseSpeed + Math.random() * 1,
+                            health: 1
+                        };
+                    }
+                    gameState.enemies.push(enemy);
+                }
+                
+                // 偶尔生成更强大的敌机
+                if (Math.random() < 0.1) {
+                    let enemy;
+                    if (enemyPool.length > 0) {
+                        enemy = enemyPool.pop();
+                        Object.assign(enemy, {
+                            x: Math.random() * (canvas.width - 60),
+                            y: -60,
+                            width: 60,
+                            height: 60,
+                            speed: baseSpeed * 0.7,
+                            health: 3
+                        });
+                    } else {
+                        enemy = {
+                            x: Math.random() * (canvas.width - 60),
+                            y: -60,
+                            width: 60,
+                            height: 60,
+                            speed: baseSpeed * 0.7,
+                            health: 3
+                        };
+                    }
+                    gameState.enemies.push(enemy);
+                }
+            }, gameState.isMobile ? 1200 : 800);
+            
+            // 开始游戏循环
+            if (gameState.gameLoopId) {
+                cancelAnimationFrame(gameState.gameLoopId);
             }
-          }
-          break;
+            gameLoop();
         }
-      }
-    }
-    
-    // 玩家飞机与敌机碰撞
-    for (let i = gameState.enemies.length - 1; i >= 0; i--) {
-      const e = gameState.enemies[i];
-      
-      if (gameState.plane.x < e.x + e.width &&
-          gameState.plane.x + gameState.plane.width > e.x &&
-          gameState.plane.y < e.y + e.height &&
-          gameState.plane.y + gameState.plane.height > e.y) {
-        // 碰撞发生
-        createExplosion(e.x + e.width/2, e.y + e.height/2, '#dc143c');
-        gameState.enemies.splice(i, 1);
-        enemyPool.push(e);
-        gameState.health -= 20;
-        healthDisplay.textContent = gameState.health;
         
-        if (gameState.health <= 0) {
-          // 游戏结束
-          gameState.running = false;
-          clearInterval(gameState.enemyInterval);
-          cancelAnimationFrame(gameState.gameLoopId);
-          
-          setTimeout(() => {
-            alert('游戏结束！点击确定重新开始。');
-            startScreen.style.display = 'flex';
-          }, 500);
+        // 绘制玩家飞机
+        function drawPlane() {
+            ctx.save();
+            
+            // 飞机主体 - 艺术风格设计
+            ctx.fillStyle = '#d4af37';
+            ctx.beginPath();
+            ctx.moveTo(gameState.plane.x, gameState.plane.y + gameState.plane.height);
+            ctx.lineTo(gameState.plane.x + gameState.plane.width, gameState.plane.y + gameState.plane.height);
+            ctx.lineTo(gameState.plane.x + gameState.plane.width / 2, gameState.plane.y);
+            ctx.closePath();
+            ctx.fill();
+            
+            // 飞机细节 - 艺术装饰
+            ctx.fillStyle = '#ffd700';
+            ctx.fillRect(gameState.plane.x + 15, gameState.plane.y + 10, 30, 15);
+            
+            // 艺术装饰线条
+            ctx.strokeStyle = '#ffd700';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(gameState.plane.x + 5, gameState.plane.y + 30);
+            ctx.lineTo(gameState.plane.x + gameState.plane.width - 5, gameState.plane.y + 30);
+            ctx.stroke();
+            
+            // 飞机引擎火焰
+            ctx.fillStyle = '#ff6b6b';
+            ctx.beginPath();
+            ctx.ellipse(gameState.plane.x + gameState.plane.width / 2, 
+                        gameState.plane.y + gameState.plane.height + 5, 
+                        5, 15, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
         }
-      }
-    }
-  }
-  
-  // 游戏主循环
-  function gameLoop(timestamp) {
-    if (!gameState.running) return;
-    
-    // 性能监控
-    monitorPerformance(timestamp);
-    
-    // 清空画布
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // 绘制游戏元素
-    drawPlane();
-    drawBullets();
-    drawEnemies();
-    drawParticles();
-    checkCollisions();
-    
-    // 继续游戏循环
-    gameState.gameLoopId = requestAnimationFrame(gameLoop);
-  }
-  
-  // 事件监听
-  canvas.addEventListener('mousemove', (e) => {
-    if (!gameState.running) return;
-    
-    gameState.plane.x = e.clientX - gameState.plane.width / 2;
-    gameState.plane.y = e.clientY - gameState.plane.height / 2;
-    
-    // 限制飞机在画布内
-    gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
-    gameState.plane.y = Math.max(0, Math.min(canvas.height - gameState.plane.height, gameState.plane.y));
-  });
-  
-  canvas.addEventListener('click', () => {
-    if (!gameState.running) return;
-    
-    // 发射子弹 - 使用对象池
-    let bullet;
-    if (bulletPool.length > 0) {
-      bullet = bulletPool.pop();
-      Object.assign(bullet, {
-        x: gameState.plane.x + gameState.plane.width / 2,
-        y: gameState.plane.y
-      });
-    } else {
-      bullet = {
-        x: gameState.plane.x + gameState.plane.width / 2,
-        y: gameState.plane.y
-      };
-    }
-    gameState.bullets.push(bullet);
-  });
-  
-  startBtn.addEventListener('click', initGame);
-  
-  backBtn.addEventListener('click', () => {
-    resumeScreen.style.display = 'none';
-    initGame();
-  });
-  
-  // 创建星空背景
-  createStars();
-  
-  // 添加键盘快捷键支持
-  document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && gameState.running) {
-      let bullet;
-      if (bulletPool.length > 0) {
-        bullet = bulletPool.pop();
-        Object.assign(bullet, {
-          x: gameState.plane.x + gameState.plane.width / 2,
-          y: gameState.plane.y
+        
+        // 绘制子弹
+        function drawBullets() {
+            ctx.fillStyle = '#ffd700';
+            
+            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
+                const b = gameState.bullets[i];
+                b.y -= gameState.isMobile ? 10 : 8;
+                
+                // 子弹发光效果
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 光晕
+                const gradient = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 10);
+                gradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
+                gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, 10, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+                
+                // 移除超出屏幕的子弹
+                if (b.y < 0) {
+                    gameState.bullets.splice(i, 1);
+                    bulletPool.push(b);
+                }
+            }
+        }
+        
+        // 绘制敌机 - 艺术风格
+        function drawEnemies() {
+            for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+                const e = gameState.enemies[i];
+                e.y += e.speed;
+                
+                // 敌机 - 抽象艺术设计
+                ctx.save();
+                ctx.fillStyle = e.health > 1 ? '#b22222' : '#dc143c';
+                ctx.beginPath();
+                ctx.moveTo(e.x, e.y);
+                ctx.lineTo(e.x + e.width, e.y);
+                ctx.lineTo(e.x + e.width - 15, e.y + e.height);
+                ctx.lineTo(e.x + 15, e.y + e.height);
+                ctx.closePath();
+                ctx.fill();
+                
+                // 敌机细节 - 艺术图案
+                ctx.fillStyle = '#ff8a8a';
+                ctx.fillRect(e.x + 10, e.y + 5, e.width - 20, 8);
+                
+                // 强大的敌机有额外艺术细节
+                if (e.health > 1) {
+                    ctx.fillStyle = '#ff8a8a';
+                    ctx.fillRect(e.x + 5, e.y + 20, e.width - 10, 10);
+                    
+                    // 艺术装饰
+                    ctx.strokeStyle = '#ffd700';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(e.x + e.width/2, e.y + e.height/2, 15, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+                
+                ctx.restore();
+                
+                // 移除超出屏幕的敌机
+                if (e.y > canvas.height) {
+                    gameState.enemies.splice(i, 1);
+                    enemyPool.push(e);
+                }
+            }
+        }
+        
+        // 绘制粒子效果 - 优化性能
+        function drawParticles() {
+            for (let i = gameState.particles.length - 1; i >= 0; i--) {
+                const p = gameState.particles[i];
+                p.life--;
+                
+                if (p.life <= 0) {
+                    gameState.particles.splice(i, 1);
+                    particlePool.push(p);
+                    continue;
+                }
+                
+                ctx.save();
+                ctx.globalAlpha = p.life / 100;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+                
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.05; // 重力效果
+            }
+        }
+        
+        // 显示浮动文字效果 - 艺术字体
+        function showFloatingText(char, x, y) {
+            const text = document.createElement('div');
+            text.className = 'floating-text';
+            text.style.left = `${x}px`;
+            text.style.top = `${y}px`;
+            text.textContent = char;
+            document.body.appendChild(text);
+            
+            setTimeout(() => {
+                text.remove();
+            }, 1500);
+        }
+        
+        // 创建粒子爆炸效果 - 使用对象池
+        function createExplosion(x, y, color = '#ffd700') {
+            const particleCount = gameState.fps > 45 ? (gameState.isMobile ? 15 : 20) : 10;
+            
+            for (let i = 0; i < particleCount; i++) {
+                let p;
+                if (particlePool.length > 0) {
+                    p = particlePool.pop();
+                    Object.assign(p, {
+                        x: x,
+                        y: y,
+                        vx: (Math.random() - 0.5) * 4,
+                        vy: (Math.random() - 0.5) * 4 - 2,
+                        size: Math.random() * 3 + 1,
+                        color: color,
+                        life: Math.random() * 50 + 50
+                    });
+                } else {
+                    p = {
+                        x: x,
+                        y: y,
+                        vx: (Math.random() - 0.5) * 4,
+                        vy: (Math.random() - 0.5) * 4 - 2,
+                        size: Math.random() * 3 + 1,
+                        color: color,
+                        life: Math.random() * 50 + 50
+                    };
+                }
+                gameState.particles.push(p);
+            }
+        }
+        
+        // 碰撞检测
+        function checkCollisions() {
+            // 子弹与敌机碰撞
+            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
+                const b = gameState.bullets[i];
+                
+                for (let j = gameState.enemies.length - 1; j >= 0; j--) {
+                    const e = gameState.enemies[j];
+                    
+                    if (b.x > e.x && b.x < e.x + e.width &&
+                        b.y > e.y && b.y < e.y + e.height) {
+                        // 击中敌机
+                        createExplosion(b.x, b.y);
+                        gameState.bullets.splice(i, 1);
+                        bulletPool.push(b);
+                        
+                        e.health--;
+                        if (e.health <= 0) {
+                            // 敌机被摧毁
+                            createExplosion(e.x + e.width/2, e.y + e.height/2, '#dc143c');
+                            gameState.enemies.splice(j, 1);
+                            enemyPool.push(e);
+                            gameState.score++;
+                            scoreDisplay.textContent = gameState.score;
+                            
+                            // 显示浮动文字
+                            if (gameState.score < gameState.resumeText.length) {
+                                showFloatingText(gameState.resumeText[gameState.score], e.x + e.width/2, e.y + e.height/2);
+                            }
+                            
+                            // 检查游戏胜利条件
+                            if (gameState.score >= 10) {
+                                gameState.running = false;
+                                clearInterval(gameState.enemyInterval);
+                                cancelAnimationFrame(gameState.gameLoopId);
+                                
+                                // 显示简历
+                                setTimeout(() => {
+                                    resumeScreen.style.display = 'flex';
+                                }, 1000);
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            // 玩家飞机与敌机碰撞
+            for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+                const e = gameState.enemies[i];
+                
+                if (gameState.plane.x < e.x + e.width &&
+                    gameState.plane.x + gameState.plane.width > e.x &&
+                    gameState.plane.y < e.y + e.height &&
+                    gameState.plane.y + gameState.plane.height > e.y) {
+                    // 碰撞发生
+                    createExplosion(e.x + e.width/2, e.y + e.height/2, '#dc143c');
+                    gameState.enemies.splice(i, 1);
+                    enemyPool.push(e);
+                    gameState.health -= 20;
+                    healthDisplay.textContent = gameState.health;
+                    
+                    if (gameState.health <= 0) {
+                        // 游戏结束
+                        gameState.running = false;
+                        clearInterval(gameState.enemyInterval);
+                        cancelAnimationFrame(gameState.gameLoopId);
+                        
+                        setTimeout(() => {
+                            alert('游戏结束！点击确定重新开始。');
+                            startScreen.style.display = 'flex';
+                        }, 500);
+                    }
+                }
+            }
+        }
+        
+        // 游戏主循环
+        function gameLoop(timestamp) {
+            if (!gameState.running) return;
+            
+            // 性能监控
+            monitorPerformance(timestamp);
+            
+            // 清空画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制游戏元素
+            drawPlane();
+            drawBullets();
+            drawEnemies();
+            drawParticles();
+            checkCollisions();
+            
+            // 继续游戏循环
+            gameState.gameLoopId = requestAnimationFrame(gameLoop);
+        }
+        
+        // 事件监听
+        canvas.addEventListener('mousemove', (e) => {
+            if (!gameState.running) return;
+            
+            gameState.plane.x = e.clientX - gameState.plane.width / 2;
+            gameState.plane.y = e.clientY - gameState.plane.height / 2;
+            
+            // 限制飞机在画布内
+            gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
+            gameState.plane.y = Math.max(0, Math.min(canvas.height - gameState.plane.height, gameState.plane.y));
         });
-      } else {
-        bullet = {
-          x: gameState.plane.x + gameState.plane.width / 2,
-          y: gameState.plane.y
-        };
-      }
-      gameState.bullets.push(bullet);
-    } else if (e.code === 'Escape') {
-      if (gameState.running) {
-        gameState.running = false;
-        startScreen.style.display = 'flex';
-        clearInterval(gameState.enemyInterval);
-        cancelAnimationFrame(gameState.gameLoopId);
-      }
-    }
-  });
-  
-  // 添加触摸支持
-  canvas.addEventListener('touchmove', (e) => {
-    if (!gameState.running) return;
-    e.preventDefault();
-    
-    const touch = e.touches[0];
-    gameState.plane.x = touch.clientX - gameState.plane.width / 2;
-    gameState.plane.y = touch.clientY - gameState.plane.height / 2;
-    
-    // 限制飞机在画布内
-    gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
-    gameState.plane.y = Math.max(0, Math.min(canvas.height - gameState.plane.height, gameState.plane.y));
-  });
-  
-  canvas.addEventListener('touchend', (e) => {
-    if (!gameState.running) return;
-    e.preventDefault();
-    
-    // 发射子弹
-    let bullet;
-    if (bulletPool.length > 0) {
-      bullet = bulletPool.pop();
-      Object.assign(bullet, {
-        x: gameState.plane.x + gameState.plane.width / 2,
-        y: gameState.plane.y
-      });
-    } else {
-      bullet = {
-        x: gameState.plane.x + gameState.plane.width / 2,
-        y: gameState.plane.y
-      };
-    }
-    gameState.bullets.push(bullet);
-  });
-</script>
+        
+        canvas.addEventListener('click', () => {
+            if (!gameState.running) return;
+            shoot();
+        });
+        
+        function shoot() {
+            // 发射子弹 - 使用对象池
+            let bullet;
+            if (bulletPool.length > 0) {
+                bullet = bulletPool.pop();
+                Object.assign(bullet, {
+                    x: gameState.plane.x + gameState.plane.width / 2,
+                    y: gameState.plane.y
+                });
+            } else {
+                bullet = {
+                    x: gameState.plane.x + gameState.plane.width / 2,
+                    y: gameState.plane.y
+                };
+            }
+            gameState.bullets.push(bullet);
+        }
+        
+        startBtn.addEventListener('click', initGame);
+        
+        backBtn.addEventListener('click', () => {
+            resumeScreen.style.display = 'none';
+            initGame();
+        });
+        
+        // 移动控制
+        leftBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            gameState.touchX = -gameState.planeSpeed;
+        });
+        
+        leftBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            gameState.touchX = 0;
+        });
+        
+        rightBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            gameState.touchX = gameState.planeSpeed;
+        });
+        
+        rightBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            gameState.touchX = 0;
+        });
+        
+        shootBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            shoot();
+        });
+        
+        // 键盘控制
+        document.addEventListener('keydown', (e) => {
+            if (!gameState.running) return;
+            
+            if (e.code === 'Space') {
+                shoot();
+            } else if (e.code === 'ArrowLeft') {
+                gameState.plane.x -= gameState.planeSpeed;
+            } else if (e.code === 'ArrowRight') {
+                gameState.plane.x += gameState.planeSpeed;
+            } else if (e.code === 'Escape') {
+                gameState.running = false;
+                startScreen.style.display = 'flex';
+                clearInterval(gameState.enemyInterval);
+                cancelAnimationFrame(gameState.gameLoopId);
+            }
+            
+            // 限制飞机在画布内
+            gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
+        });
+        
+        // 移动设备触摸控制
+        canvas.addEventListener('touchmove', (e) => {
+            if (!gameState.running) return;
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            gameState.plane.x = touch.clientX - gameState.plane.width / 2;
+            gameState.plane.y = touch.clientY - gameState.plane.height / 2;
+            
+            // 限制飞机在画布内
+            gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
+            gameState.plane.y = Math.max(0, Math.min(canvas.height - gameState.plane.height, gameState.plane.y));
+        });
+        
+        canvas.addEventListener('touchend', (e) => {
+            if (!gameState.running) return;
+            e.preventDefault();
+        });
+        
+        // 创建星空背景
+        createStars();
+        
+        // 移动设备触摸控制更新
+        function updateMobileControls() {
+            if (gameState.touchX !== 0) {
+                gameState.plane.x += gameState.touchX;
+                gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
+            }
+        }
+        
+        // 移动设备控制循环
+        function mobileControlLoop() {
+            if (gameState.running && gameState.isMobile) {
+                updateMobileControls();
+            }
+            requestAnimationFrame(mobileControlLoop);
+        }
+        mobileControlLoop();
+    </script>
 </body>
 </html>
