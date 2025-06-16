@@ -1,4 +1,3 @@
-//test 全屏显示游戏
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -15,14 +14,15 @@
             font-family: 'Noto Serif SC', serif;
         }
 
-        body {
-            margin: 0;
-            padding: 0;
+        html, body {
+            width: 100%;
+            height: 100%;
             overflow: hidden;
+        }
+
+        body {
             background: linear-gradient(135deg, #0a0a0f, #1e1e28);
             color: #e6e6e6;
-            height: 100vh;
-            width: 100vw;
             position: fixed;
             perspective: 1000px;
         }
@@ -438,6 +438,11 @@
                 font-size: 1.8rem;
                 top: 20px;
             }
+            .control-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -558,12 +563,14 @@
         const rightBtn = document.getElementById('rightBtn');
         const shootBtn = document.getElementById('shootBtn');
         
-        // 设置画布尺寸
+        // 设置画布尺寸为全屏
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
         
+        // 初始化和窗口大小变化时调整画布
+        window.addEventListener('load', resizeCanvas);
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
         
@@ -1126,7 +1133,7 @@
             }
         }
         
-        // 移动设备控制循环
+        // 移动设备控制循环 wow
         function mobileControlLoop() {
             if (gameState.running && gameState.isMobile) {
                 updateMobileControls();
