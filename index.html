@@ -1,3 +1,4 @@
+//test 全屏显示游戏
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -21,20 +22,26 @@
             background: linear-gradient(135deg, #0a0a0f, #1e1e28);
             color: #e6e6e6;
             height: 100vh;
-            position: relative;
+            width: 100vw;
+            position: fixed;
             perspective: 1000px;
         }
 
         .game-container {
-            position: relative;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 100vh;
+            height: 100%;
             overflow: hidden;
+            z-index: 1;
         }
 
         canvas {
             display: block;
             background: radial-gradient(ellipse at center, rgba(10, 15, 40, 0.8) 0%, rgba(5, 10, 30, 0.9) 100%);
+            width: 100%;
+            height: 100%;
             transform: translateZ(0);
         }
 
@@ -82,7 +89,7 @@
         }
 
         .screen {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -118,16 +125,18 @@
             text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
             font-family: 'Anton', sans-serif;
             letter-spacing: 2px;
+            text-align: center;
         }
 
         .subtitle {
             font-size: 1.5rem;
             margin-bottom: 40px;
             color: #a1c4fd;
-            max-width: 700px;
+            max-width: 90%;
             text-align: center;
             line-height: 1.6;
             font-weight: 300;
+            padding: 0 20px;
         }
 
         .btn {
@@ -356,18 +365,6 @@
             50% { opacity: 1; }
         }
 
-        .artistic-border {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            bottom: 20px;
-            border: 2px solid rgba(212, 175, 55, 0.3);
-            border-radius: 15px;
-            pointer-events: none;
-            z-index: -1;
-        }
-
         .performance-warning {
             position: absolute;
             bottom: 20px;
@@ -405,13 +402,25 @@
             backdrop-filter: blur(5px);
         }
 
+        .game-title {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 2.5rem;
+            font-family: 'Anton', sans-serif;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            z-index: 10;
+        }
+
         @media (max-width: 768px) {
             .title {
                 font-size: 2.5rem;
             }
             .subtitle {
                 font-size: 1.1rem;
-                padding: 0 20px;
             }
             .mobile-controls {
                 display: flex;
@@ -425,6 +434,10 @@
             .resume-section h3 {
                 font-size: 1.5rem;
             }
+            .game-title {
+                font-size: 1.8rem;
+                top: 20px;
+            }
         }
     </style>
 </head>
@@ -433,7 +446,7 @@
         <div id="stars"></div>
         <canvas id="gameCanvas"></canvas>
         
-        <div class="artistic-border"></div>
+        <div class="game-title">王保民 · 艺术简历射击游戏</div>
         
         <div id="info">
             <i class="fas fa-mouse"></i> 移动鼠标 | 
