@@ -207,9 +207,7 @@
         .header-art {
             width: 100%;
             height: 300px;
-            background: 
-                linear-gradient(rgba(0,0,0,0.6), 
-                url('https://raw.githubusercontent.com/Luciuswang/Luciuswang.github.io/main/2d_art_100.jpg') center/cover;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://raw.githubusercontent.com/Luciuswang/Luciuswang.github.io/main/2d_art_100.jpg') center/cover;
             border-radius: 10px;
             margin-bottom: 30px;
             position: relative;
@@ -451,13 +449,6 @@
         <div id="stars"></div>
         <canvas id="gameCanvas"></canvas>
         
-        <div class="game-title">王保民 · 艺术简历射击游戏</div>
-        
-        <div id="info">
-            <i class="fas fa-mouse"></i> 移动鼠标 | 
-            <i class="fas fa-mouse-pointer"></i> 点击射击 | 
-            <i class="fas fa-bullseye"></i> 击落敌机解锁简历
-        </div>
         <div id="score">击毁敌机: <span id="scoreValue">0</span>/10</div>
         <div id="health">生命值: <span id="healthValue">100</span>%</div>
         
@@ -549,598 +540,564 @@
     </div>
 
     <script>
-        // 高性能游戏实现
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const startScreen = document.getElementById('startScreen');
-        const resumeScreen = document.getElementById('resumeScreen');
-        const startBtn = document.getElementById('startBtn');
-        const backBtn = document.getElementById('backBtn');
-        const scoreDisplay = document.getElementById('scoreValue');
-        const healthDisplay = document.getElementById('healthValue');
-        const perfWarning = document.getElementById('performanceWarning');
-        const leftBtn = document.getElementById('leftBtn');
-        const rightBtn = document.getElementById('rightBtn');
-        const shootBtn = document.getElementById('shootBtn');
-        
-        // 设置画布尺寸为全屏
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        
-        // 初始化和窗口大小变化时调整画布
-        window.addEventListener('load', resizeCanvas);
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-        
-        // 游戏状态变量
-        let gameState = {
-            bullets: [],
-            enemies: [],
-            particles: [],
-            plane: { x: canvas.width / 2, y: canvas.height - 100, width: 60, height: 40 },
-            running: false,
-            score: 0,
-            health: 100,
-            gameLoopId: null,
-            enemyInterval: null,
-            lastFrameTime: 0,
-            fps: 0,
-            lowFpsCount: 0,
-            resumeText: '王保民 男 1977年生于上海。2000年毕业于天津美术学院雕塑系。2000至2014年在Ubisoft参与《孤岛惊魂》《细胞分裂》等项目，任特效及贴图美术。2014年加入Garena，主导《FreeFire》等项目视觉开发。擅长SFX、Shader、特效管理与团队建设。',
-            isMobile: false,
-            planeSpeed: 8,
-            touchX: 0
-        };
-        
-        // 对象池
-        const bulletPool = [];
-        const enemyPool = [];
-        const particlePool = [];
-        
-        // 创建星空背景
-        function createStars() {
-            const starsContainer = document.getElementById('stars');
-            starsContainer.innerHTML = '';
-            
-            const starCount = Math.floor((canvas.width * canvas.height) / 2500);
-            
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.width = `${Math.random() * 2}px`;
-                star.style.height = star.style.width;
-                star.style.opacity = Math.random() * 0.8 + 0.2;
-                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
-                starsContainer.appendChild(star);
-            }
-        }
-        
-        // 性能监控
-        function monitorPerformance(now) {
-            if (gameState.lastFrameTime) {
-                const delta = now - gameState.lastFrameTime;
-                gameState.fps = Math.round(1000 / delta);
+        document.addEventListener('DOMContentLoaded', function() {
+            // 游戏变量
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const startScreen = document.getElementById('startScreen');
+            const resumeScreen = document.getElementById('resumeScreen');
+            const startBtn = document.getElementById('startBtn');
+            const backBtn = document.getElementById('backBtn');
+            const scoreDisplay = document.getElementById('scoreValue');
+            const healthDisplay = document.getElementById('healthValue');
+            const perfWarning = document.getElementById('performanceWarning');
+            const leftBtn = document.getElementById('leftBtn');
+            const rightBtn = document.getElementById('rightBtn');
+            const shootBtn = document.getElementById('shootBtn');
+
+            // 游戏状态
+            let gameState = {
+                bullets: [],
+                enemies: [],
+                particles: [],
+                plane: { x: 0, y: 0, width: 60, height: 40 },
+                running: false,
+                score: 0,
+                health: 100,
+                gameLoopId: null,
+                enemyInterval: null,
+                lastFrameTime: 0,
+                fps: 0,
+                lowFpsCount: 0,
+                resumeText: '王保民 男 1977年生于上海。2000年毕业于天津美术学院雕塑系。2000至2014年在Ubisoft参与《孤岛惊魂》《细胞分裂》等项目，任特效及贴图美术。2014年加入Garena，主导《FreeFire》等项目视觉开发。擅长SFX、Shader、特效管理与团队建设。',
+                isMobile: false,
+                planeSpeed: 8,
+                touchX: 0
+            };
+
+            // 对象池
+            const bulletPool = [];
+            const enemyPool = [];
+            const particlePool = [];
+
+            // 设置画布尺寸
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
                 
-                // 低FPS处理
-                if (gameState.fps < 45) {
-                    gameState.lowFpsCount++;
-                    if (gameState.lowFpsCount > 10) {
-                        perfWarning.style.display = 'block';
-                        // 降低特效质量
-                        gameState.particles = gameState.particles.slice(0, Math.floor(gameState.particles.length * 0.6));
-                    }
-                } else {
-                    gameState.lowFpsCount = 0;
-                    perfWarning.style.display = 'none';
+                if (gameState.running) {
+                    gameState.plane.x = canvas.width / 2 - gameState.plane.width / 2;
+                    gameState.plane.y = canvas.height - 150;
                 }
             }
-            gameState.lastFrameTime = now;
-        }
-        
-        // 初始化游戏
-        function initGame() {
-            // 检测移动设备
-            gameState.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            // 重置游戏状态
-            gameState.bullets = [];
-            gameState.enemies = [];
-            gameState.particles = [];
-            gameState.plane.x = canvas.width / 2;
-            gameState.plane.y = canvas.height - 100;
-            gameState.score = 0;
-            gameState.health = 100;
-            gameState.lowFpsCount = 0;
-            scoreDisplay.textContent = gameState.score;
-            healthDisplay.textContent = gameState.health;
-            
-            startScreen.style.display = 'none';
-            resumeScreen.style.display = 'none';
-            perfWarning.style.display = 'none';
-            gameState.running = true;
-            
-            // 清除之前的敌机生成器
-            if (gameState.enemyInterval) {
-                clearInterval(gameState.enemyInterval);
-            }
-            
-            // 设置敌机生成器（难度随分数增加）
-            gameState.enemyInterval = setInterval(() => {
-                const baseSpeed = 2 + Math.min(gameState.score / 10, 3);
-                const spawnRate = Math.max(500, 2000 - gameState.score * 50);
+
+            // 创建星空背景
+            function createStars() {
+                const starsContainer = document.getElementById('stars');
+                starsContainer.innerHTML = '';
                 
-                if (Math.random() < 0.7) {
-                    let enemy;
-                    if (enemyPool.length > 0) {
-                        enemy = enemyPool.pop();
-                        Object.assign(enemy, {
-                            x: Math.random() * (canvas.width - 40),
-                            y: -40,
-                            width: 40,
-                            height: 40,
-                            speed: baseSpeed + Math.random() * 1,
-                            health: 1
-                        });
+                const starCount = Math.floor((canvas.width * canvas.height) / 2500);
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.width = `${Math.random() * 2}px`;
+                    star.style.height = star.style.width;
+                    star.style.opacity = Math.random() * 0.8 + 0.2;
+                    star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                    starsContainer.appendChild(star);
+                }
+            }
+
+            // 性能监控
+            function monitorPerformance(now) {
+                if (gameState.lastFrameTime) {
+                    const delta = now - gameState.lastFrameTime;
+                    gameState.fps = Math.round(1000 / delta);
+                    
+                    if (gameState.fps < 45) {
+                        gameState.lowFpsCount++;
+                        if (gameState.lowFpsCount > 10) {
+                            perfWarning.style.display = 'block';
+                            gameState.particles = gameState.particles.slice(0, Math.floor(gameState.particles.length * 0.6));
+                        }
                     } else {
-                        enemy = {
-                            x: Math.random() * (canvas.width - 40),
-                            y: -40,
-                            width: 40,
-                            height: 40,
-                            speed: baseSpeed + Math.random() * 1,
-                            health: 1
-                        };
+                        gameState.lowFpsCount = 0;
+                        perfWarning.style.display = 'none';
                     }
-                    gameState.enemies.push(enemy);
+                }
+                gameState.lastFrameTime = now;
+            }
+
+            // 初始化游戏
+            function initGame() {
+                console.log('游戏初始化开始');
+                
+                gameState.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                gameState.bullets = [];
+                gameState.enemies = [];
+                gameState.particles = [];
+                gameState.plane.x = canvas.width / 2 - gameState.plane.width / 2;
+                gameState.plane.y = canvas.height - 150;
+                gameState.score = 0;
+                gameState.health = 100;
+                gameState.lowFpsCount = 0;
+                
+                scoreDisplay.textContent = gameState.score;
+                healthDisplay.textContent = gameState.health;
+                
+                startScreen.style.display = 'none';
+                resumeScreen.style.display = 'none';
+                perfWarning.style.display = 'none';
+                gameState.running = true;
+                
+                if (gameState.enemyInterval) {
+                    clearInterval(gameState.enemyInterval);
                 }
                 
-                // 偶尔生成更强大的敌机
-                if (Math.random() < 0.1) {
-                    let enemy;
-                    if (enemyPool.length > 0) {
-                        enemy = enemyPool.pop();
-                        Object.assign(enemy, {
-                            x: Math.random() * (canvas.width - 60),
-                            y: -60,
-                            width: 60,
-                            height: 60,
-                            speed: baseSpeed * 0.7,
-                            health: 3
-                        });
-                    } else {
-                        enemy = {
-                            x: Math.random() * (canvas.width - 60),
-                            y: -60,
-                            width: 60,
-                            height: 60,
-                            speed: baseSpeed * 0.7,
-                            health: 3
-                        };
+                gameState.enemyInterval = setInterval(() => {
+                    const baseSpeed = 2 + Math.min(gameState.score / 10, 3);
+                    
+                    if (Math.random() < 0.7) {
+                        let enemy;
+                        if (enemyPool.length > 0) {
+                            enemy = enemyPool.pop();
+                            Object.assign(enemy, {
+                                x: Math.random() * (canvas.width - 40),
+                                y: -40,
+                                width: 40,
+                                height: 40,
+                                speed: baseSpeed + Math.random() * 1,
+                                health: 1
+                            });
+                        } else {
+                            enemy = {
+                                x: Math.random() * (canvas.width - 40),
+                                y: -40,
+                                width: 40,
+                                height: 40,
+                                speed: baseSpeed + Math.random() * 1,
+                                health: 1
+                            };
+                        }
+                        gameState.enemies.push(enemy);
                     }
-                    gameState.enemies.push(enemy);
+                    
+                    if (Math.random() < 0.1) {
+                        let enemy;
+                        if (enemyPool.length > 0) {
+                            enemy = enemyPool.pop();
+                            Object.assign(enemy, {
+                                x: Math.random() * (canvas.width - 60),
+                                y: -60,
+                                width: 60,
+                                height: 60,
+                                speed: baseSpeed * 0.7,
+                                health: 3
+                            });
+                        } else {
+                            enemy = {
+                                x: Math.random() * (canvas.width - 60),
+                                y: -60,
+                                width: 60,
+                                height: 60,
+                                speed: baseSpeed * 0.7,
+                                health: 3
+                            };
+                        }
+                        gameState.enemies.push(enemy);
+                    }
+                }, gameState.isMobile ? 1200 : 800);
+                
+                if (gameState.gameLoopId) {
+                    cancelAnimationFrame(gameState.gameLoopId);
                 }
-            }, gameState.isMobile ? 1200 : 800);
-            
-            // 开始游戏循环
-            if (gameState.gameLoopId) {
-                cancelAnimationFrame(gameState.gameLoopId);
+                gameLoop();
+                
+                console.log('游戏初始化完成');
             }
-            gameLoop();
-        }
-        
-        // 绘制玩家飞机
-        function drawPlane() {
-            ctx.save();
-            
-            // 飞机主体 - 艺术风格设计
-            ctx.fillStyle = '#d4af37';
-            ctx.beginPath();
-            ctx.moveTo(gameState.plane.x, gameState.plane.y + gameState.plane.height);
-            ctx.lineTo(gameState.plane.x + gameState.plane.width, gameState.plane.y + gameState.plane.height);
-            ctx.lineTo(gameState.plane.x + gameState.plane.width / 2, gameState.plane.y);
-            ctx.closePath();
-            ctx.fill();
-            
-            // 飞机细节 - 艺术装饰
-            ctx.fillStyle = '#ffd700';
-            ctx.fillRect(gameState.plane.x + 15, gameState.plane.y + 10, 30, 15);
-            
-            // 艺术装饰线条
-            ctx.strokeStyle = '#ffd700';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(gameState.plane.x + 5, gameState.plane.y + 30);
-            ctx.lineTo(gameState.plane.x + gameState.plane.width - 5, gameState.plane.y + 30);
-            ctx.stroke();
-            
-            // 飞机引擎火焰
-            ctx.fillStyle = '#ff6b6b';
-            ctx.beginPath();
-            ctx.ellipse(gameState.plane.x + gameState.plane.width / 2, 
-                        gameState.plane.y + gameState.plane.height + 5, 
-                        5, 15, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.restore();
-        }
-        
-        // 绘制子弹
-        function drawBullets() {
-            ctx.fillStyle = '#ffd700';
-            
-            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
-                const b = gameState.bullets[i];
-                b.y -= gameState.isMobile ? 10 : 8;
-                
-                // 子弹发光效果
+
+            // 绘制飞机
+            function drawPlane() {
                 ctx.save();
-                ctx.beginPath();
-                ctx.arc(b.x, b.y, 4, 0, Math.PI * 2);
-                ctx.fill();
                 
-                // 光晕
-                const gradient = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 10);
-                gradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
-                gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
-                ctx.fillStyle = gradient;
+                ctx.fillStyle = '#d4af37';
                 ctx.beginPath();
-                ctx.arc(b.x, b.y, 10, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-                
-                // 移除超出屏幕的子弹
-                if (b.y < 0) {
-                    gameState.bullets.splice(i, 1);
-                    bulletPool.push(b);
-                }
-            }
-        }
-        
-        // 绘制敌机 - 艺术风格
-        function drawEnemies() {
-            for (let i = gameState.enemies.length - 1; i >= 0; i--) {
-                const e = gameState.enemies[i];
-                e.y += e.speed;
-                
-                // 敌机 - 抽象艺术设计
-                ctx.save();
-                ctx.fillStyle = e.health > 1 ? '#b22222' : '#dc143c';
-                ctx.beginPath();
-                ctx.moveTo(e.x, e.y);
-                ctx.lineTo(e.x + e.width, e.y);
-                ctx.lineTo(e.x + e.width - 15, e.y + e.height);
-                ctx.lineTo(e.x + 15, e.y + e.height);
+                ctx.moveTo(gameState.plane.x, gameState.plane.y + gameState.plane.height);
+                ctx.lineTo(gameState.plane.x + gameState.plane.width, gameState.plane.y + gameState.plane.height);
+                ctx.lineTo(gameState.plane.x + gameState.plane.width / 2, gameState.plane.y);
                 ctx.closePath();
                 ctx.fill();
                 
-                // 敌机细节 - 艺术图案
-                ctx.fillStyle = '#ff8a8a';
-                ctx.fillRect(e.x + 10, e.y + 5, e.width - 20, 8);
+                ctx.fillStyle = '#ffd700';
+                ctx.fillRect(gameState.plane.x + 15, gameState.plane.y + 10, 30, 15);
                 
-                // 强大的敌机有额外艺术细节
-                if (e.health > 1) {
-                    ctx.fillStyle = '#ff8a8a';
-                    ctx.fillRect(e.x + 5, e.y + 20, e.width - 10, 10);
-                    
-                    // 艺术装饰
-                    ctx.strokeStyle = '#ffd700';
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.arc(e.x + e.width/2, e.y + e.height/2, 15, 0, Math.PI * 2);
-                    ctx.stroke();
-                }
-                
-                ctx.restore();
-                
-                // 移除超出屏幕的敌机
-                if (e.y > canvas.height) {
-                    gameState.enemies.splice(i, 1);
-                    enemyPool.push(e);
-                }
-            }
-        }
-        
-        // 绘制粒子效果 - 优化性能
-        function drawParticles() {
-            for (let i = gameState.particles.length - 1; i >= 0; i--) {
-                const p = gameState.particles[i];
-                p.life--;
-                
-                if (p.life <= 0) {
-                    gameState.particles.splice(i, 1);
-                    particlePool.push(p);
-                    continue;
-                }
-                
-                ctx.save();
-                ctx.globalAlpha = p.life / 100;
-                ctx.fillStyle = p.color;
+                ctx.strokeStyle = '#ffd700';
+                ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.moveTo(gameState.plane.x + 5, gameState.plane.y + 30);
+                ctx.lineTo(gameState.plane.x + gameState.plane.width - 5, gameState.plane.y + 30);
+                ctx.stroke();
+                
+                ctx.fillStyle = '#ff6b6b';
+                ctx.beginPath();
+                ctx.ellipse(gameState.plane.x + gameState.plane.width / 2, 
+                            gameState.plane.y + gameState.plane.height + 5, 
+                            5, 15, 0, 0, Math.PI * 2);
                 ctx.fill();
+                
                 ctx.restore();
-                
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.05; // 重力效果
             }
-        }
-        
-        // 显示浮动文字效果 - 艺术字体
-        function showFloatingText(char, x, y) {
-            const text = document.createElement('div');
-            text.className = 'floating-text';
-            text.style.left = `${x}px`;
-            text.style.top = `${y}px`;
-            text.textContent = char;
-            document.body.appendChild(text);
-            
-            setTimeout(() => {
-                text.remove();
-            }, 1500);
-        }
-        
-        // 创建粒子爆炸效果 - 使用对象池
-        function createExplosion(x, y, color = '#ffd700') {
-            const particleCount = gameState.fps > 45 ? (gameState.isMobile ? 15 : 20) : 10;
-            
-            for (let i = 0; i < particleCount; i++) {
-                let p;
-                if (particlePool.length > 0) {
-                    p = particlePool.pop();
-                    Object.assign(p, {
-                        x: x,
-                        y: y,
-                        vx: (Math.random() - 0.5) * 4,
-                        vy: (Math.random() - 0.5) * 4 - 2,
-                        size: Math.random() * 3 + 1,
-                        color: color,
-                        life: Math.random() * 50 + 50
-                    });
-                } else {
-                    p = {
-                        x: x,
-                        y: y,
-                        vx: (Math.random() - 0.5) * 4,
-                        vy: (Math.random() - 0.5) * 4 - 2,
-                        size: Math.random() * 3 + 1,
-                        color: color,
-                        life: Math.random() * 50 + 50
-                    };
-                }
-                gameState.particles.push(p);
-            }
-        }
-        
-        // 碰撞检测
-        function checkCollisions() {
-            // 子弹与敌机碰撞
-            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
-                const b = gameState.bullets[i];
+
+            // 绘制子弹
+            function drawBullets() {
+                ctx.fillStyle = '#ffd700';
                 
-                for (let j = gameState.enemies.length - 1; j >= 0; j--) {
-                    const e = gameState.enemies[j];
+                for (let i = gameState.bullets.length - 1; i >= 0; i--) {
+                    const b = gameState.bullets[i];
+                    b.y -= gameState.isMobile ? 10 : 8;
                     
-                    if (b.x > e.x && b.x < e.x + e.width &&
-                        b.y > e.y && b.y < e.y + e.height) {
-                        // 击中敌机
-                        createExplosion(b.x, b.y);
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    const gradient = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 10);
+                    gradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
+                    gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                    
+                    if (b.y < 0) {
                         gameState.bullets.splice(i, 1);
                         bulletPool.push(b);
-                        
-                        e.health--;
-                        if (e.health <= 0) {
-                            // 敌机被摧毁
-                            createExplosion(e.x + e.width/2, e.y + e.height/2, '#dc143c');
-                            gameState.enemies.splice(j, 1);
-                            enemyPool.push(e);
-                            gameState.score++;
-                            scoreDisplay.textContent = gameState.score;
-                            
-                            // 显示浮动文字
-                            if (gameState.score < gameState.resumeText.length) {
-                                showFloatingText(gameState.resumeText[gameState.score], e.x + e.width/2, e.y + e.height/2);
-                            }
-                            
-                            // 检查游戏胜利条件
-                            if (gameState.score >= 10) {
-                                gameState.running = false;
-                                clearInterval(gameState.enemyInterval);
-                                cancelAnimationFrame(gameState.gameLoopId);
-                                
-                                // 显示简历
-                                setTimeout(() => {
-                                    resumeScreen.style.display = 'flex';
-                                }, 1000);
-                            }
-                        }
-                        break;
                     }
                 }
             }
-            
-            // 玩家飞机与敌机碰撞
-            for (let i = gameState.enemies.length - 1; i >= 0; i--) {
-                const e = gameState.enemies[i];
-                
-                if (gameState.plane.x < e.x + e.width &&
-                    gameState.plane.x + gameState.plane.width > e.x &&
-                    gameState.plane.y < e.y + e.height &&
-                    gameState.plane.y + gameState.plane.height > e.y) {
-                    // 碰撞发生
-                    createExplosion(e.x + e.width/2, e.y + e.height/2, '#dc143c');
-                    gameState.enemies.splice(i, 1);
-                    enemyPool.push(e);
-                    gameState.health -= 20;
-                    healthDisplay.textContent = gameState.health;
+
+            // 绘制敌机
+            function drawEnemies() {
+                for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+                    const e = gameState.enemies[i];
+                    e.y += e.speed;
                     
-                    if (gameState.health <= 0) {
-                        // 游戏结束
-                        gameState.running = false;
-                        clearInterval(gameState.enemyInterval);
-                        cancelAnimationFrame(gameState.gameLoopId);
+                    ctx.save();
+                    ctx.fillStyle = e.health > 1 ? '#b22222' : '#dc143c';
+                    ctx.beginPath();
+                    ctx.moveTo(e.x, e.y);
+                    ctx.lineTo(e.x + e.width, e.y);
+                    ctx.lineTo(e.x + e.width - 15, e.y + e.height);
+                    ctx.lineTo(e.x + 15, e.y + e.height);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    ctx.fillStyle = '#ff8a8a';
+                    ctx.fillRect(e.x + 10, e.y + 5, e.width - 20, 8);
+                    
+                    if (e.health > 1) {
+                        ctx.fillStyle = '#ff8a8a';
+                        ctx.fillRect(e.x + 5, e.y + 20, e.width - 10, 10);
                         
-                        setTimeout(() => {
-                            alert('游戏结束！点击确定重新开始。');
-                            startScreen.style.display = 'flex';
-                        }, 500);
+                        ctx.strokeStyle = '#ffd700';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(e.x + e.width/2, e.y + e.height/2, 15, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                    
+                    ctx.restore();
+                    
+                    if (e.y > canvas.height) {
+                        gameState.enemies.splice(i, 1);
+                        enemyPool.push(e);
                     }
                 }
             }
-        }
-        
-        // 游戏主循环
-        function gameLoop(timestamp) {
-            if (!gameState.running) return;
-            
-            // 性能监控
-            monitorPerformance(timestamp);
-            
-            // 清空画布
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // 绘制游戏元素
-            drawPlane();
-            drawBullets();
-            drawEnemies();
-            drawParticles();
-            checkCollisions();
-            
-            // 继续游戏循环
-            gameState.gameLoopId = requestAnimationFrame(gameLoop);
-        }
-        
-        // 事件监听
-        canvas.addEventListener('mousemove', (e) => {
-            if (!gameState.running) return;
-            
-            gameState.plane.x = e.clientX - gameState.plane.width / 2;
-            gameState.plane.y = e.clientY - gameState.plane.height / 2;
-            
-            // 限制飞机在画布内
-            gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
-            gameState.plane.y = Math.max(0, Math.min(canvas.height - gameState.plane.height, gameState.plane.y));
-        });
-        
-        canvas.addEventListener('click', () => {
-            if (!gameState.running) return;
-            shoot();
-        });
-        
-        function shoot() {
-            // 发射子弹 - 使用对象池
-            let bullet;
-            if (bulletPool.length > 0) {
-                bullet = bulletPool.pop();
-                Object.assign(bullet, {
-                    x: gameState.plane.x + gameState.plane.width / 2,
-                    y: gameState.plane.y
-                });
-            } else {
-                bullet = {
-                    x: gameState.plane.x + gameState.plane.width / 2,
-                    y: gameState.plane.y
-                };
+
+            // 绘制粒子
+            function drawParticles() {
+                for (let i = gameState.particles.length - 1; i >= 0; i--) {
+                    const p = gameState.particles[i];
+                    p.life--;
+                    
+                    if (p.life <= 0) {
+                        gameState.particles.splice(i, 1);
+                        particlePool.push(p);
+                        continue;
+                    }
+                    
+                    ctx.save();
+                    ctx.globalAlpha = p.life / 100;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                    
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.05;
+                }
             }
-            gameState.bullets.push(bullet);
-        }
-        
-        startBtn.addEventListener('click', initGame);
-        
-        backBtn.addEventListener('click', () => {
-            resumeScreen.style.display = 'none';
-            initGame();
-        });
-        
-        // 移动控制
-        leftBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            gameState.touchX = -gameState.planeSpeed;
-        });
-        
-        leftBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            gameState.touchX = 0;
-        });
-        
-        rightBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            gameState.touchX = gameState.planeSpeed;
-        });
-        
-        rightBtn.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            gameState.touchX = 0;
-        });
-        
-        shootBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            shoot();
-        });
-        
-        // 键盘控制
-        document.addEventListener('keydown', (e) => {
-            if (!gameState.running) return;
-            
-            if (e.code === 'Space') {
-                shoot();
-            } else if (e.code === 'ArrowLeft') {
-                gameState.plane.x -= gameState.planeSpeed;
-            } else if (e.code === 'ArrowRight') {
-                gameState.plane.x += gameState.planeSpeed;
-            } else if (e.code === 'Escape') {
-                gameState.running = false;
-                startScreen.style.display = 'flex';
-                clearInterval(gameState.enemyInterval);
-                cancelAnimationFrame(gameState.gameLoopId);
+
+            // 显示浮动文字
+            function showFloatingText(char, x, y) {
+                const text = document.createElement('div');
+                text.className = 'floating-text';
+                text.style.left = `${x}px`;
+                text.style.top = `${y}px`;
+                text.textContent = char;
+                document.body.appendChild(text);
+                
+                setTimeout(() => {
+                    text.remove();
+                }, 1500);
             }
-            
-            // 限制飞机在画布内
-            gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
-        });
-        
-        // 移动设备触摸控制
-        canvas.addEventListener('touchmove', (e) => {
-            if (!gameState.running) return;
-            e.preventDefault();
-            
-            const touch = e.touches[0];
-            gameState.plane.x = touch.clientX - gameState.plane.width / 2;
-            gameState.plane.y = touch.clientY - gameState.plane.height / 2;
-            
-            // 限制飞机在画布内
-            gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
-            gameState.plane.y = Math.max(0, Math.min(canvas.height - gameState.plane.height, gameState.plane.y));
-        });
-        
-        canvas.addEventListener('touchend', (e) => {
-            if (!gameState.running) return;
-            e.preventDefault();
-        });
-        
-        // 创建星空背景
-        createStars();
-        
-        // 移动设备触摸控制更新
-        function updateMobileControls() {
-            if (gameState.touchX !== 0) {
-                gameState.plane.x += gameState.touchX;
+
+            // 创建爆炸效果
+            function createExplosion(x, y, color = '#ffd700') {
+                const particleCount = gameState.fps > 45 ? (gameState.isMobile ? 15 : 20) : 10;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    let p;
+                    if (particlePool.length > 0) {
+                        p = particlePool.pop();
+                        Object.assign(p, {
+                            x: x,
+                            y: y,
+                            vx: (Math.random() - 0.5) * 4,
+                            vy: (Math.random() - 0.5) * 4 - 2,
+                            size: Math.random() * 3 + 1,
+                            color: color,
+                            life: Math.random() * 50 + 50
+                        });
+                    } else {
+                        p = {
+                            x: x,
+                            y: y,
+                            vx: (Math.random() - 0.5) * 4,
+                            vy: (Math.random() - 0.5) * 4 - 2,
+                            size: Math.random() * 3 + 1,
+                            color: color,
+                            life: Math.random() * 50 + 50
+                        };
+                    }
+                    gameState.particles.push(p);
+                }
+            }
+
+            // 碰撞检测
+            function checkCollisions() {
+                for (let i = gameState.bullets.length - 1; i >= 0; i--) {
+                    const b = gameState.bullets[i];
+                    
+                    for (let j = gameState.enemies.length - 1; j >= 0; j--) {
+                        const e = gameState.enemies[j];
+                        
+                        if (b.x > e.x && b.x < e.x + e.width &&
+                            b.y > e.y && b.y < e.y + e.height) {
+                            createExplosion(b.x, b.y);
+                            gameState.bullets.splice(i, 1);
+                            bulletPool.push(b);
+                            
+                            e.health--;
+                            if (e.health <= 0) {
+                                createExplosion(e.x + e.width/2, e.y + e.height/2, '#dc143c');
+                                gameState.enemies.splice(j, 1);
+                                enemyPool.push(e);
+                                gameState.score++;
+                                scoreDisplay.textContent = gameState.score;
+                                
+                                if (gameState.score < gameState.resumeText.length) {
+                                    showFloatingText(gameState.resumeText[gameState.score], e.x + e.width/2, e.y + e.height/2);
+                                }
+                                
+                                if (gameState.score >= 10) {
+                                    gameState.running = false;
+                                    clearInterval(gameState.enemyInterval);
+                                    cancelAnimationFrame(gameState.gameLoopId);
+                                    
+                                    setTimeout(() => {
+                                        resumeScreen.style.display = 'flex';
+                                    }, 1000);
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                
+                for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+                    const e = gameState.enemies[i];
+                    
+                    if (gameState.plane.x < e.x + e.width &&
+                        gameState.plane.x + gameState.plane.width > e.x &&
+                        gameState.plane.y < e.y + e.height &&
+                        gameState.plane.y + gameState.plane.height > e.y) {
+                        createExplosion(e.x + e.width/2, e.y + e.height/2, '#dc143c');
+                        gameState.enemies.splice(i, 1);
+                        enemyPool.push(e);
+                        gameState.health -= 20;
+                        healthDisplay.textContent = gameState.health;
+                        
+                        if (gameState.health <= 0) {
+                            gameState.running = false;
+                            clearInterval(gameState.enemyInterval);
+                            cancelAnimationFrame(gameState.gameLoopId);
+                            
+                            setTimeout(() => {
+                                alert('游戏结束！点击确定重新开始。');
+                                startScreen.style.display = 'flex';
+                            }, 500);
+                        }
+                    }
+                }
+            }
+
+            // 游戏主循环
+            function gameLoop(timestamp) {
+                if (!gameState.running) return;
+                
+                monitorPerformance(timestamp);
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                drawPlane();
+                drawBullets();
+                drawEnemies();
+                drawParticles();
+                checkCollisions();
+                
+                gameState.gameLoopId = requestAnimationFrame(gameLoop);
+            }
+
+            // 事件监听
+            canvas.addEventListener('mousemove', (e) => {
+                if (!gameState.running) return;
+                
+                gameState.plane.x = e.clientX - gameState.plane.width / 2;
+                gameState.plane.y = e.clientY - gameState.plane.height / 2;
+                
                 gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
+                gameState.plane.y = Math.max(0, Math.min(canvas.height - gameState.plane.height, gameState.plane.y));
+            });
+
+            canvas.addEventListener('click', () => {
+                if (!gameState.running) return;
+                shoot();
+            });
+
+            function shoot() {
+                let bullet;
+                if (bulletPool.length > 0) {
+                    bullet = bulletPool.pop();
+                    Object.assign(bullet, {
+                        x: gameState.plane.x + gameState.plane.width / 2,
+                        y: gameState.plane.y
+                    });
+                } else {
+                    bullet = {
+                        x: gameState.plane.x + gameState.plane.width / 2,
+                        y: gameState.plane.y
+                    };
+                }
+                gameState.bullets.push(bullet);
             }
-        }
-        
-        // 移动设备控制循环
-        function mobileControlLoop() {
-            if (gameState.running && gameState.isMobile) {
-                updateMobileControls();
+
+            startBtn.addEventListener('click', initGame);
+            
+            backBtn.addEventListener('click', () => {
+                resumeScreen.style.display = 'none';
+                initGame();
+            });
+
+            // 移动控制
+            leftBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                gameState.touchX = -gameState.planeSpeed;
+            });
+
+            leftBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                gameState.touchX = 0;
+            });
+
+            rightBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                gameState.touchX = gameState.planeSpeed;
+            });
+
+            rightBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                gameState.touchX = 0;
+            });
+
+            shootBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                shoot();
+            });
+
+            // 键盘控制
+            document.addEventListener('keydown', (e) => {
+                if (!gameState.running) return;
+                
+                if (e.code === 'Space') {
+                    shoot();
+                } else if (e.code === 'ArrowLeft') {
+                    gameState.plane.x -= gameState.planeSpeed;
+                } else if (e.code === 'ArrowRight') {
+                    gameState.plane.x += gameState.planeSpeed;
+                } else if (e.code === 'Escape') {
+                    gameState.running = false;
+                    startScreen.style.display = 'flex';
+                    clearInterval(gameState.enemyInterval);
+                    cancelAnimationFrame(gameState.gameLoopId);
+                }
+                
+                gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
+            });
+
+            // 移动设备触摸控制
+            canvas.addEventListener('touchmove', (e) => {
+                if (!gameState.running) return;
+                e.preventDefault();
+                
+                const touch = e.touches[0];
+                gameState.plane.x = touch.clientX - gameState.plane.width / 2;
+                gameState.plane.y = touch.clientY - gameState.plane.height / 2;
+                
+                gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
+                gameState.plane.y = Math.max(0, Math.min(canvas.height - gameState.plane.height, gameState.plane.y));
+            });
+
+            canvas.addEventListener('touchend', (e) => {
+                if (!gameState.running) return;
+                e.preventDefault();
+            });
+
+            // 初始化
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            createStars();
+
+            // 移动设备控制循环
+            function mobileControlLoop() {
+                if (gameState.running && gameState.isMobile) {
+                    if (gameState.touchX !== 0) {
+                        gameState.plane.x += gameState.touchX;
+                        gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
+                    }
+                }
+                requestAnimationFrame(mobileControlLoop);
             }
-            requestAnimationFrame(mobileControlLoop);
-        }
-        mobileControlLoop();
+            mobileControlLoop();
+        });
     </script>
 </body>
 </html>
