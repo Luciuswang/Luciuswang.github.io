@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>王保民 · 创意艺术简历</title>
+    <title>Lucius · 创意艺术简历</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Serif+SC:wght@400;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
     <style>
@@ -39,10 +39,20 @@
 
         canvas {
             display: block;
-            background: radial-gradient(ellipse at center, rgba(10, 15, 40, 0.8) 0%, rgba(5, 10, 30, 0.9) 100%);
+            /* background: radial-gradient(ellipse at center, rgba(10, 15, 40, 0.8) 0%, rgba(5, 10, 30, 0.9) 100%); */
+            background: transparent;
             width: 100%;
             height: 100%;
             transform: translateZ(0);
+        }
+
+        #shaderCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Place it behind the game canvas */
         }
 
         #info {
@@ -105,7 +115,7 @@
         }
 
         #startScreen {
-            z-index: 200;
+            z-index: 2000;
             background: linear-gradient(rgba(10, 15, 40, 0.9), rgba(5, 10, 30, 0.95));
         }
 
@@ -121,6 +131,7 @@
             margin-bottom: 20px;
             background: linear-gradient(to right, #d4af37, #ffd700);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
             font-family: 'Anton', sans-serif;
@@ -155,7 +166,7 @@
             font-weight: bold;
             letter-spacing: 1px;
             font-family: 'ZCOOL KuaiLe', sans-serif;
-            z-index: 10;
+            z-index: 1000;
         }
 
         .btn:hover {
@@ -446,7 +457,7 @@
 </head>
 <body>
     <div class="game-container">
-        <div id="stars"></div>
+        <canvas id="shaderCanvas"></canvas>
         <canvas id="gameCanvas"></canvas>
         
         <div id="score">击毁敌机: <span id="scoreValue">0</span>/10</div>
@@ -469,7 +480,7 @@
         </div>
         
         <div id="startScreen" class="screen">
-            <h1 class="title">王保民 · 创意艺术简历</h1>
+            <h1 class="title">Lucius · 创意艺术简历</h1>
             <p class="subtitle">通过射击游戏解锁美术总监的职业生涯 - 移动鼠标控制飞船，点击射击敌机</p>
             <button id="startBtn" class="btn">开始游戏</button>
             <div style="position: absolute; bottom: 30px; color: #5d8aa8; font-size: 14px;">
@@ -481,7 +492,7 @@
             <div class="resume-content">
                 <div class="resume-header">
                     <div class="header-art"></div>
-                    <h2>王保民 - 美术总监</h2>
+                    <h2>Lucius - 美术总监</h2>
                     <p>luxi_007@163.com | 13564009387</p>
                 </div>
                 
@@ -541,9 +552,79 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面加载完成，开始初始化...');
+            
+            // Create ocean background using Canvas 2D API
+            const shaderCanvas = document.getElementById('shaderCanvas');
+            const shaderCtx = shaderCanvas.getContext('2d');
+            let animationTime = 0;
+            
+            function drawOceanBackground() {
+                const width = shaderCanvas.width;
+                const height = shaderCanvas.height;
+                
+                // Create gradient for ocean
+                const gradient = shaderCtx.createLinearGradient(0, 0, 0, height);
+                gradient.addColorStop(0, `rgba(${Math.floor(25 + 15 * Math.sin(animationTime * 0.01))}, ${Math.floor(50 + 25 * Math.sin(animationTime * 0.015))}, ${Math.floor(120 + 30 * Math.sin(animationTime * 0.008))}, 1)`);
+                gradient.addColorStop(0.5, `rgba(${Math.floor(40 + 20 * Math.sin(animationTime * 0.012))}, ${Math.floor(80 + 30 * Math.sin(animationTime * 0.018))}, ${Math.floor(150 + 40 * Math.sin(animationTime * 0.006))}, 1)`);
+                gradient.addColorStop(1, `rgba(${Math.floor(15 + 10 * Math.sin(animationTime * 0.009))}, ${Math.floor(35 + 15 * Math.sin(animationTime * 0.014))}, ${Math.floor(80 + 20 * Math.sin(animationTime * 0.011))}, 1)`);
+                
+                shaderCtx.fillStyle = gradient;
+                shaderCtx.fillRect(0, 0, width, height);
+                
+                // Draw wave patterns
+                for (let i = 0; i < 5; i++) {
+                    const amplitude = 10 + i * 5;
+                    const frequency = 0.01 + i * 0.005;
+                    const phase = animationTime * (0.02 + i * 0.01);
+                    
+                    shaderCtx.beginPath();
+                    shaderCtx.strokeStyle = `rgba(255, 255, 255, ${0.1 - i * 0.015})`;
+                    shaderCtx.lineWidth = 2;
+                    
+                    for (let x = 0; x <= width; x += 5) {
+                        const y = height * 0.3 + amplitude * Math.sin(x * frequency + phase) + 
+                                  amplitude * 0.5 * Math.sin(x * frequency * 2 + phase * 1.5);
+                        if (x === 0) {
+                            shaderCtx.moveTo(x, y);
+                        } else {
+                            shaderCtx.lineTo(x, y);
+                        }
+                    }
+                    shaderCtx.stroke();
+                }
+                
+                // Add sparkles/reflections
+                for (let i = 0; i < 20; i++) {
+                    const x = (animationTime * (2 + i * 0.1) + i * 100) % width;
+                    const y = height * 0.2 + 50 * Math.sin(animationTime * 0.02 + i);
+                    const size = Math.max(0.5, 2 + 3 * Math.sin(animationTime * 0.05 + i));
+                    const opacity = Math.max(0, 0.3 + 0.4 * Math.sin(animationTime * 0.03 + i));
+                    
+                    if (size > 0 && opacity > 0) {
+                        shaderCtx.beginPath();
+                        shaderCtx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                        shaderCtx.arc(x, y, size, 0, Math.PI * 2);
+                        shaderCtx.fill();
+                    }
+                }
+                
+                animationTime++;
+                requestAnimationFrame(drawOceanBackground);
+            }
+            
+            function resizeShaderCanvas() {
+                shaderCanvas.width = window.innerWidth;
+                shaderCanvas.height = window.innerHeight;
+            }
+            
+            window.addEventListener('resize', resizeShaderCanvas);
+            resizeShaderCanvas();
+            drawOceanBackground();
+
             // 游戏变量
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
+            const gameCanvas = document.getElementById('gameCanvas');
+            const ctx = gameCanvas.getContext('2d');
             const startScreen = document.getElementById('startScreen');
             const resumeScreen = document.getElementById('resumeScreen');
             const startBtn = document.getElementById('startBtn');
@@ -569,7 +650,7 @@
                 lastFrameTime: 0,
                 fps: 0,
                 lowFpsCount: 0,
-                resumeText: '王保民 男 1977年生于上海。2000年毕业于天津美术学院雕塑系。2000至2014年在Ubisoft参与《孤岛惊魂》《细胞分裂》等项目，任特效及贴图美术。2014年加入Garena，主导《FreeFire》等项目视觉开发。擅长SFX、Shader、特效管理与团队建设。',
+                resumeText: 'Lucius 2000年毕业于天津美术学院雕塑系。2000至2014年在Ubisoft参与《孤岛惊魂》《细胞分裂》等项目，任特效及贴图美术。2014年加入Garena，主导《FreeFire》等项目视觉开发。擅长SFX、Shader、特效管理与团队建设。',
                 isMobile: false,
                 planeSpeed: 8,
                 touchX: 0
@@ -582,32 +663,12 @@
 
             // 设置画布尺寸
             function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+                gameCanvas.width = window.innerWidth;
+                gameCanvas.height = window.innerHeight;
                 
                 if (gameState.running) {
-                    gameState.plane.x = canvas.width / 2 - gameState.plane.width / 2;
-                    gameState.plane.y = canvas.height - 150;
-                }
-            }
-
-            // 创建星空背景
-            function createStars() {
-                const starsContainer = document.getElementById('stars');
-                starsContainer.innerHTML = '';
-                
-                const starCount = Math.floor((canvas.width * canvas.height) / 2500);
-                
-                for (let i = 0; i < starCount; i++) {
-                    const star = document.createElement('div');
-                    star.className = 'star';
-                    star.style.left = `${Math.random() * 100}%`;
-                    star.style.top = `${Math.random() * 100}%`;
-                    star.style.width = `${Math.random() * 2}px`;
-                    star.style.height = star.style.width;
-                    star.style.opacity = Math.random() * 0.8 + 0.2;
-                    star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
-                    starsContainer.appendChild(star);
+                    gameState.plane.x = gameCanvas.width / 2 - gameState.plane.width / 2;
+                    gameState.plane.y = gameCanvas.height - 150;
                 }
             }
 
@@ -640,8 +701,8 @@
                 gameState.bullets = [];
                 gameState.enemies = [];
                 gameState.particles = [];
-                gameState.plane.x = canvas.width / 2 - gameState.plane.width / 2;
-                gameState.plane.y = canvas.height - 150;
+                gameState.plane.x = gameCanvas.width / 2 - gameState.plane.width / 2;
+                gameState.plane.y = gameCanvas.height - 150;
                 gameState.score = 0;
                 gameState.health = 100;
                 gameState.lowFpsCount = 0;
@@ -666,7 +727,7 @@
                         if (enemyPool.length > 0) {
                             enemy = enemyPool.pop();
                             Object.assign(enemy, {
-                                x: Math.random() * (canvas.width - 40),
+                                x: Math.random() * (gameCanvas.width - 40),
                                 y: -40,
                                 width: 40,
                                 height: 40,
@@ -675,7 +736,7 @@
                             });
                         } else {
                             enemy = {
-                                x: Math.random() * (canvas.width - 40),
+                                x: Math.random() * (gameCanvas.width - 40),
                                 y: -40,
                                 width: 40,
                                 height: 40,
@@ -691,7 +752,7 @@
                         if (enemyPool.length > 0) {
                             enemy = enemyPool.pop();
                             Object.assign(enemy, {
-                                x: Math.random() * (canvas.width - 60),
+                                x: Math.random() * (gameCanvas.width - 60),
                                 y: -60,
                                 width: 60,
                                 height: 60,
@@ -700,7 +761,7 @@
                             });
                         } else {
                             enemy = {
-                                x: Math.random() * (canvas.width - 60),
+                                x: Math.random() * (gameCanvas.width - 60),
                                 y: -60,
                                 width: 60,
                                 height: 60,
@@ -813,7 +874,7 @@
                     
                     ctx.restore();
                     
-                    if (e.y > canvas.height) {
+                    if (e.y > gameCanvas.height) {
                         gameState.enemies.splice(i, 1);
                         enemyPool.push(e);
                     }
@@ -966,7 +1027,7 @@
                 
                 monitorPerformance(timestamp);
                 
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
                 
                 drawPlane();
                 drawBullets();
@@ -978,17 +1039,17 @@
             }
 
             // 事件监听
-            canvas.addEventListener('mousemove', (e) => {
+            gameCanvas.addEventListener('mousemove', (e) => {
                 if (!gameState.running) return;
                 
                 gameState.plane.x = e.clientX - gameState.plane.width / 2;
                 gameState.plane.y = e.clientY - gameState.plane.height / 2;
                 
-                gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
-                gameState.plane.y = Math.max(0, Math.min(canvas.height - gameState.plane.height, gameState.plane.y));
+                gameState.plane.x = Math.max(0, Math.min(gameCanvas.width - gameState.plane.width, gameState.plane.x));
+                gameState.plane.y = Math.max(0, Math.min(gameCanvas.height - gameState.plane.height, gameState.plane.y));
             });
 
-            canvas.addEventListener('click', () => {
+            gameCanvas.addEventListener('click', () => {
                 if (!gameState.running) return;
                 shoot();
             });
@@ -1010,7 +1071,14 @@
                 gameState.bullets.push(bullet);
             }
 
-            startBtn.addEventListener('click', initGame);
+            console.log('绑定按钮事件...');
+            console.log('startBtn:', startBtn);
+            console.log('initGame函数:', typeof initGame);
+            
+            startBtn.addEventListener('click', function() {
+                console.log('开始游戏按钮被点击！');
+                initGame();
+            });
             
             backBtn.addEventListener('click', () => {
                 resumeScreen.style.display = 'none';
@@ -1060,11 +1128,11 @@
                     cancelAnimationFrame(gameState.gameLoopId);
                 }
                 
-                gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
+                gameState.plane.x = Math.max(0, Math.min(gameCanvas.width - gameState.plane.width, gameState.plane.x));
             });
 
             // 移动设备触摸控制
-            canvas.addEventListener('touchmove', (e) => {
+            gameCanvas.addEventListener('touchmove', (e) => {
                 if (!gameState.running) return;
                 e.preventDefault();
                 
@@ -1072,11 +1140,11 @@
                 gameState.plane.x = touch.clientX - gameState.plane.width / 2;
                 gameState.plane.y = touch.clientY - gameState.plane.height / 2;
                 
-                gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
-                gameState.plane.y = Math.max(0, Math.min(canvas.height - gameState.plane.height, gameState.plane.y));
+                gameState.plane.x = Math.max(0, Math.min(gameCanvas.width - gameState.plane.width, gameState.plane.x));
+                gameState.plane.y = Math.max(0, Math.min(gameCanvas.height - gameState.plane.height, gameState.plane.y));
             });
 
-            canvas.addEventListener('touchend', (e) => {
+            gameCanvas.addEventListener('touchend', (e) => {
                 if (!gameState.running) return;
                 e.preventDefault();
             });
@@ -1084,14 +1152,13 @@
             // 初始化
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
-            createStars();
 
             // 移动设备控制循环
             function mobileControlLoop() {
                 if (gameState.running && gameState.isMobile) {
                     if (gameState.touchX !== 0) {
                         gameState.plane.x += gameState.touchX;
-                        gameState.plane.x = Math.max(0, Math.min(canvas.width - gameState.plane.width, gameState.plane.x));
+                        gameState.plane.x = Math.max(0, Math.min(gameCanvas.width - gameState.plane.width, gameState.plane.x));
                     }
                 }
                 requestAnimationFrame(mobileControlLoop);
